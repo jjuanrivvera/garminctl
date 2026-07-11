@@ -96,6 +96,16 @@ func NewClient(_ context.Context, sessionJSON string) (*gm.Client, error) {
 	return c, nil
 }
 
+// SessionInfo reports the OAuth2 expiry and whether both tokens are present, parsed from a
+// stored session JSON — a status check with no live API call.
+func SessionInfo(sessionJSON string) (expiry time.Time, authenticated bool, err error) {
+	var s session
+	if err = json.Unmarshal([]byte(sessionJSON), &s); err != nil {
+		return time.Time{}, false, err
+	}
+	return s.OAuth2Expiry, s.OAuth1Token != "" && s.OAuth2AccessToken != "", nil
+}
+
 // DumpSession serializes the client's current session (with any refreshed tokens) for
 // persistence back to the keyring after a run.
 func DumpSession(c *gm.Client) (string, error) {

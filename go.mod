@@ -6,6 +6,7 @@ require (
 	github.com/llehouerou/go-garmin v0.0.0-20260217041215-cbf5895e08bf
 	github.com/spf13/cobra v1.10.2
 	github.com/zalando/go-keyring v0.2.8
+	go.yaml.in/yaml/v4 v4.0.0-rc.3
 	golang.org/x/crypto v0.54.0
 	golang.org/x/term v0.45.0
 )

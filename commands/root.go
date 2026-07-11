@@ -15,6 +15,12 @@ type globalFlags struct {
 
 var gf globalFlags
 
+// commandRegistrars is populated by each command file's init(); NewRootCmd applies them so
+// adding a command is a single init() with zero edits to shared code.
+var commandRegistrars []func(*cobra.Command)
+
+func registerCommand(fn func(*cobra.Command)) { commandRegistrars = append(commandRegistrars, fn) }
+
 // NewRootCmd builds the root command tree.
 func NewRootCmd() *cobra.Command {
 	root := &cobra.Command{
@@ -31,5 +37,8 @@ several accounts, OS-keyring token storage, and table/json/yaml/csv output.`,
 	p.StringVarP(&gf.output, "output", "o", "table", "output format: table|json|yaml|csv")
 	p.BoolVar(&gf.noColor, "no-color", false, "disable colored output")
 	p.BoolVar(&gf.dryRun, "dry-run", false, "print the equivalent request instead of sending it")
+	for _, fn := range commandRegistrars {
+		fn(root)
+	}
 	return root
 }
