@@ -9,6 +9,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"net/http"
 	"os"
 	"path/filepath"
 	"strings"
@@ -88,8 +89,12 @@ func readJSON(path string, v any) error {
 // NewClient builds an authenticated go-garmin client from a stored session JSON. The client
 // auto-refreshes the OAuth2 token (via the long-lived OAuth1 token) before each call when it's
 // near expiry — the reliability that the Python cron setup lacked.
-func NewClient(_ context.Context, sessionJSON string) (*gm.Client, error) {
-	c := gm.New(gm.Options{})
+func NewClient(_ context.Context, sessionJSON string, httpClient *http.Client) (*gm.Client, error) {
+	opts := gm.Options{}
+	if httpClient != nil { // test seam: inject a mock transport
+		opts.HTTPClient = httpClient
+	}
+	c := gm.New(opts)
 	if err := c.LoadSession(strings.NewReader(sessionJSON)); err != nil {
 		return nil, fmt.Errorf("load session: %w", err)
 	}

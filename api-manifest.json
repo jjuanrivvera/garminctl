@@ -1,0 +1,123 @@
+{
+  "_comment": "Spec-derived manifest (cliwright §0/§11). Enumerated from the llehouerou/go-garmin endpoint registry (definitions.RegisterAll -> reg.All()). The curated resources[] are the friendly top-level commands; the full surface is exposed under `garminctl connect <service> <endpoint>` and enumerated in methods[]. Garmin Connect is an RPC-style (non-OpenAPI) API, so flat method names are the correct representation.",
+  "binary": "garminctl",
+  "base_url": "https://connect.garmin.com",
+  "auth": "oauth1+oauth2 (garth-style, via llehouerou/go-garmin) — OAuth1 ~1yr drives OAuth2 auto-refresh",
+  "pagination": "none (date-scoped daily endpoints)",
+  "api_method_total": 68,
+  "api_method_source": "github.com/llehouerou/go-garmin endpoint registry (definitions.RegisterAll -> reg.All())",
+  "profile_flag": "profile",
+  "profile_noun": "profile (Garmin account, e.g. juan / vane)",
+  "resources": [
+    {
+      "name": "body-composition",
+      "verbs": [],
+      "read_only": true,
+      "key_fields": [
+        "weight",
+        "bmi",
+        "bodyFat"
+      ]
+    },
+    {
+      "name": "sleep",
+      "verbs": [],
+      "read_only": true
+    },
+    {
+      "name": "stress",
+      "verbs": [],
+      "read_only": true
+    },
+    {
+      "name": "body-battery",
+      "verbs": [],
+      "read_only": true
+    },
+    {
+      "name": "heart-rate",
+      "verbs": [],
+      "read_only": true
+    },
+    {
+      "name": "respiration",
+      "verbs": [],
+      "read_only": true
+    },
+    {
+      "name": "intensity-minutes",
+      "verbs": [],
+      "read_only": true
+    }
+  ],
+  "methods": [
+    "CreateWorkout",
+    "DeleteCourse",
+    "DeleteWorkout",
+    "DownloadCourseFIT",
+    "DownloadCourseGPX",
+    "GetActivity",
+    "GetActivityDetails",
+    "GetActivityExerciseSets",
+    "GetActivityGear",
+    "GetActivityHRTimeInZones",
+    "GetActivityPowerTimeInZones",
+    "GetActivitySplitSummaries",
+    "GetActivitySplits",
+    "GetActivityTypedSplits",
+    "GetActivityTypes",
+    "GetActivityWeather",
+    "GetBodyBatteryEvents",
+    "GetCalendar",
+    "GetCourse",
+    "GetCurrentDate",
+    "GetCyclingFTP",
+    "GetDailyHRV",
+    "GetDailyHeartRate",
+    "GetDailyIntensityMinutes",
+    "GetDailyRespiration",
+    "GetDailySleep",
+    "GetDailySpO2",
+    "GetDailyStress",
+    "GetDailyWeight",
+    "GetDeviceSettings",
+    "GetEnduranceScore",
+    "GetExercise",
+    "GetFTPRange",
+    "GetFitnessAgeStats",
+    "GetFitnessStats",
+    "GetFitnessStatsActivities",
+    "GetHRVRange",
+    "GetHeartRateZones",
+    "GetHeatAltitudeAcclimation",
+    "GetHillScore",
+    "GetLactateThresholdHRRange",
+    "GetLactateThresholdSpeedRange",
+    "GetLatestLactateThreshold",
+    "GetMaxMetDaily",
+    "GetMaxMetLatest",
+    "GetPowerToWeight",
+    "GetProfileSettings",
+    "GetRacePredictions",
+    "GetSocialProfile",
+    "GetTrainingLoadBalance",
+    "GetTrainingReadiness",
+    "GetTrainingStatusAggregated",
+    "GetTrainingStatusDaily",
+    "GetUserSettings",
+    "GetWeightRange",
+    "GetWorkout",
+    "ImportCourseGPX",
+    "ListActivities",
+    "ListDevices",
+    "ListEquipmentTypes",
+    "ListExerciseCategories",
+    "ListExercises",
+    "ListMuscleGroups",
+    "ListOwnerCourses",
+    "ListWorkouts",
+    "ScheduleWorkout",
+    "UnscheduleWorkout",
+    "UpdateWorkout"
+  ]
+}

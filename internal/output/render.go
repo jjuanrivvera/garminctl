@@ -61,10 +61,11 @@ func toMap(v any) (map[string]any, error) {
 		return nil, err
 	}
 	var m map[string]any
-	if err := json.Unmarshal(b, &m); err != nil {
-		return map[string]any{"value": v}, nil
+	if json.Unmarshal(b, &m) == nil {
+		return m, nil
 	}
-	return m, nil
+	// Not a JSON object (array/scalar/null) — wrap so it still renders.
+	return map[string]any{"value": v}, nil
 }
 
 func sortedKeys(m map[string]any) []string {
@@ -76,12 +77,15 @@ func sortedKeys(m map[string]any) []string {
 	return ks
 }
 
-// scalar keeps primitives as-is and collapses nested objects/arrays to compact JSON for a cell.
+// scalar keeps primitives as-is and collapses nested objects/arrays to compact one-line JSON
+// so a single cell never breaks the table layout.
 func scalar(v any) any {
-	switch v.(type) {
+	switch t := v.(type) {
 	case map[string]any, []any:
 		b, _ := json.Marshal(v)
-		return string(b)
+		return cellOneLine(string(b))
+	case string:
+		return cellOneLine(t)
 	}
 	return v
 }

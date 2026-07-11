@@ -83,8 +83,3 @@ func (s *store) Delete(profile string) error {
 	}
 	return fmt.Errorf("delete token: %w", ferr)
 }
-
-// PlatformKey namespaces the platform app token keyring entry for a profile. The "/" is
-// safe: profile names reject it (config.ValidateProfileName), so a user profile can never
-// collide with a platform entry.
-func PlatformKey(profile string) string { return profile + "/platform" }

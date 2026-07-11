@@ -3,6 +3,7 @@ package commands
 import (
 	"context"
 	"fmt"
+	"net/http"
 
 	gm "github.com/llehouerou/go-garmin"
 
@@ -10,6 +11,10 @@ import (
 	"github.com/jjuanrivvera/garminctl/internal/config"
 	"github.com/jjuanrivvera/garminctl/internal/garmin"
 )
+
+// testHTTPClient is a test seam: when non-nil it is injected into the go-garmin client so tests
+// can mock the transport. It is nil in production (the default HTTP client is used).
+var testHTTPClient *http.Client
 
 // store returns the keyring-backed token store (encrypted-file fallback rooted at the config dir).
 func store() auth.Store {
@@ -27,7 +32,7 @@ func getClient(ctx context.Context) (client *gm.Client, save func() error, profi
 		return nil, nil, profile, fmt.Errorf(
 			"no session for profile %q — run `garminctl auth import` or `garminctl auth login`", profile)
 	}
-	c, err := garmin.NewClient(ctx, sessionJSON)
+	c, err := garmin.NewClient(ctx, sessionJSON, testHTTPClient)
 	if err != nil {
 		return nil, nil, profile, err
 	}
