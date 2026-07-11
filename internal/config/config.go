@@ -6,6 +6,7 @@ package config
 import (
 	"os"
 	"path/filepath"
+	"slices"
 
 	"go.yaml.in/yaml/v4"
 )
@@ -80,10 +81,8 @@ func Save(c *Config) error {
 
 // AddProfile records a profile name and, if it's the first, makes it the default.
 func (c *Config) AddProfile(name string) {
-	for _, p := range c.Profiles {
-		if p == name {
-			return
-		}
+	if slices.Contains(c.Profiles, name) {
+		return
 	}
 	c.Profiles = append(c.Profiles, name)
 	if c.DefaultProfile == "" {
