@@ -111,6 +111,25 @@ func SessionInfo(sessionJSON string) (expiry time.Time, authenticated bool, err 
 	return s.OAuth2Expiry, s.OAuth1Token != "" && s.OAuth2AccessToken != "", nil
 }
 
+// SessionToken extracts the current OAuth2 bearer token and Connect API base URL from a stored
+// session JSON — what the raw `api` escape hatch needs to sign a one-off request. Prefer the
+// typed surface, which refreshes through go-garmin; this reuses whatever token the last typed
+// call persisted to the keyring.
+func SessionToken(sessionJSON string) (token, baseURL string, err error) {
+	var s session
+	if err = json.Unmarshal([]byte(sessionJSON), &s); err != nil {
+		return "", "", err
+	}
+	if s.OAuth2AccessToken == "" {
+		return "", "", fmt.Errorf("session has no OAuth2 token")
+	}
+	domain := s.Domain
+	if domain == "" {
+		domain = "garmin.com"
+	}
+	return s.OAuth2AccessToken, "https://connectapi." + domain, nil
+}
+
 // DumpSession serializes the client's current session (with any refreshed tokens) for
 // persistence back to the keyring after a run.
 func DumpSession(c *gm.Client) (string, error) {

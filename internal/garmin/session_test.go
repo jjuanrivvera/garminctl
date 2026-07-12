@@ -91,3 +91,22 @@ func TestSessionInfoBadJSON(t *testing.T) {
 		t.Error("bad json should error")
 	}
 }
+
+func TestSessionToken(t *testing.T) {
+	js := `{"oauth2_access_token":"AT","domain":"garmin.com","oauth1_token":"x"}`
+	tok, base, err := SessionToken(js)
+	if err != nil || tok != "AT" || base != "https://connectapi.garmin.com" {
+		t.Errorf("SessionToken = %q %q %v", tok, base, err)
+	}
+	// Domain defaults to garmin.com when absent.
+	if _, base, err := SessionToken(`{"oauth2_access_token":"AT"}`); err != nil || base != "https://connectapi.garmin.com" {
+		t.Errorf("default domain: base=%q err=%v", base, err)
+	}
+	// Missing token is an error; bad JSON is an error.
+	if _, _, err := SessionToken(`{"oauth1_token":"x"}`); err == nil {
+		t.Error("missing OAuth2 token should error")
+	}
+	if _, _, err := SessionToken(`not json`); err == nil {
+		t.Error("bad JSON should error")
+	}
+}

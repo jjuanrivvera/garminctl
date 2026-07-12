@@ -4,21 +4,15 @@ import (
 	"context"
 	"fmt"
 	"os"
-	"os/signal"
-	"syscall"
 
 	"github.com/jjuanrivvera/garminctl/internal/output"
 	"github.com/jjuanrivvera/garminctl/internal/version"
 )
 
 // Main builds and runs the garminctl root command for the given args, returning a process exit
-// code. It lives here (not in package main) so the entry-point logic is testable.
-func Main(args []string) int {
-	// signal.NotifyContext makes Ctrl-C (SIGINT/SIGTERM) cancel in-flight work: token refresh,
-	// retry backoff, and rate-limit waits all observe this context.
-	ctx, stop := signal.NotifyContext(context.Background(), syscall.SIGINT, syscall.SIGTERM)
-	defer stop()
-
+// code. It lives here (not in package main) so the entry-point logic is testable, and takes the
+// signal-cancelled context from main() so Ctrl-C propagates into every request.
+func Main(ctx context.Context, args []string) int {
 	root := NewRootCmd()
 	root.Version = version.Get().Version
 	root.SetVersionTemplate(version.String() + "\n")

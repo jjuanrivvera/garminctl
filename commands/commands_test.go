@@ -203,11 +203,42 @@ func TestConnectExecMocked(t *testing.T) {
 }
 
 func TestMainEntry(t *testing.T) {
-	if code := Main([]string{"--version"}); code != 0 {
+	if code := Main(t.Context(), []string{"--version"}); code != 0 {
 		t.Errorf("--version exit = %d, want 0", code)
 	}
-	if code := Main([]string{"definitely-not-a-command"}); code != 1 {
+	if code := Main(t.Context(), []string{"definitely-not-a-command"}); code != 1 {
 		t.Errorf("unknown command exit = %d, want 1", code)
+	}
+}
+
+func TestAPINoSession(t *testing.T) {
+	keyring.MockInit()
+	t.Setenv("XDG_CONFIG_HOME", t.TempDir())
+	if _, _, err := execRoot(t, "--profile", "nobody", "api", "/x"); err == nil {
+		t.Error("api without a session should error")
+	}
+}
+
+func TestAPINonJSONResponse(t *testing.T) {
+	keyring.MockInit()
+	t.Setenv("XDG_CONFIG_HOME", t.TempDir())
+	t.Setenv("GARMINCTL_PROFILE", "")
+	testHTTPClient = &http.Client{Transport: rtFunc(func(_ *http.Request) (*http.Response, error) {
+		return &http.Response{StatusCode: 200, Body: io.NopCloser(strings.NewReader("plain text")), Header: make(http.Header)}, nil
+	})}
+	t.Cleanup(func() { testHTTPClient = nil })
+
+	gdir := t.TempDir()
+	writeGarthTokens(t, gdir, time.Now().Add(time.Hour).Unix())
+	if _, _, err := execRoot(t, "--profile", "juan", "auth", "import", "--from", gdir); err != nil {
+		t.Fatal(err)
+	}
+	out, _, err := execRoot(t, "--profile", "juan", "api", "/x")
+	if err != nil {
+		t.Fatalf("api non-JSON: %v", err)
+	}
+	if !strings.Contains(out, "plain text") { // non-JSON body passes through verbatim
+		t.Errorf("non-JSON response not rendered: %q", out)
 	}
 }
 
