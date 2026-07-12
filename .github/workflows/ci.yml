@@ -71,9 +71,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with: { fetch-depth: 0 }   # tags, so goreleaser derives a version (not 0.0.0-SNAPSHOT)
       - uses: actions/setup-go@v5
         with: { go-version: stable }
+      # syft must be on PATH for the SBOM step; provide it so the snapshot can't fail on it.
+      - uses: anchore/sbom-action/download-syft@v0
       - uses: goreleaser/goreleaser-action@v6
         with: { args: check }
       - uses: goreleaser/goreleaser-action@v6
-        with: { args: release --snapshot --clean --skip=sign,sbom,docker }
+        with: { args: release --snapshot --clean --skip=sign,docker }

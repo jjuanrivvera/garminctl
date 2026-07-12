@@ -44,8 +44,8 @@ garminctl has no MFA flow — it reuses tokens you already have or logs in with 
 
 ```bash
 garminctl init                          # auto-detects ~/.garminconnect
-garminctl auth import --from ~/.garminconnect            --profile juan
-garminctl auth import --from ~/.garminconnect-vane       --profile vane
+garminctl auth import --from ~/.garminconnect            --profile me
+garminctl auth import --from ~/.garminconnect-alt       --profile alt
 ```
 
 `import` reads `oauth1_token.json` + `oauth2_token.json` and stores the translated session in
@@ -61,7 +61,7 @@ garminctl auth login --email you@example.com     # prompts for the password (hid
 
 ```bash
 garminctl auth status
-# profile:        juan
+# profile:        me
 # authenticated:  true
 # oauth2 expiry:  2026-03-14T09:22:10Z  (expired — refreshes on next call)
 ```
@@ -106,8 +106,8 @@ garminctl --dry-run api /userprofile-service/userprofile   # prints the equivale
 
 ```bash
 garminctl config list                # * marks the default
-garminctl config use vane
-garminctl --profile juan sleep       # one-off override; env GARMINCTL_PROFILE also works
+garminctl config use alt
+garminctl --profile me sleep       # one-off override; env GARMINCTL_PROFILE also works
 ```
 
 ## Output

@@ -9,7 +9,7 @@ garminctl auth login [flags]
 ### Examples
 
 ```
-  garminctl --profile juan auth login
+  garminctl --profile me auth login
 ```
 
 ### Options

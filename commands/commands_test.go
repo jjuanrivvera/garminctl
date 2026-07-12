@@ -101,17 +101,17 @@ func TestAuthImportStatusLogout(t *testing.T) {
 	gdir := t.TempDir()
 	writeGarthTokens(t, gdir, time.Now().Add(time.Hour).Unix())
 
-	if _, errb, err := execRoot(t, "--profile", "juan", "auth", "import", "--from", gdir); err != nil {
+	if _, errb, err := execRoot(t, "--profile", "me", "auth", "import", "--from", gdir); err != nil {
 		t.Fatalf("import: %v (%s)", err, errb)
 	}
-	out, _, err := execRoot(t, "--profile", "juan", "auth", "status")
+	out, _, err := execRoot(t, "--profile", "me", "auth", "status")
 	if err != nil || !strings.Contains(out, "authenticated:  true") {
 		t.Fatalf("status: err=%v out=%q", err, out)
 	}
-	if _, _, err := execRoot(t, "--profile", "juan", "auth", "logout"); err != nil {
+	if _, _, err := execRoot(t, "--profile", "me", "auth", "logout"); err != nil {
 		t.Fatalf("logout: %v", err)
 	}
-	if _, _, err := execRoot(t, "--profile", "juan", "auth", "status"); err == nil {
+	if _, _, err := execRoot(t, "--profile", "me", "auth", "status"); err == nil {
 		t.Error("status after logout should fail (no session)")
 	}
 }
@@ -119,7 +119,7 @@ func TestAuthImportStatusLogout(t *testing.T) {
 func TestAuthImportMissingDir(t *testing.T) {
 	keyring.MockInit()
 	t.Setenv("XDG_CONFIG_HOME", t.TempDir())
-	if _, _, err := execRoot(t, "--profile", "juan", "auth", "import", "--from", filepath.Join(t.TempDir(), "nope")); err == nil {
+	if _, _, err := execRoot(t, "--profile", "me", "auth", "import", "--from", filepath.Join(t.TempDir(), "nope")); err == nil {
 		t.Error("import from missing dir should fail")
 	}
 }
@@ -160,11 +160,11 @@ func TestResourceSuccessMocked(t *testing.T) {
 
 	gdir := t.TempDir()
 	writeGarthTokens(t, gdir, time.Now().Add(time.Hour).Unix())
-	if _, _, err := execRoot(t, "--profile", "juan", "auth", "import", "--from", gdir); err != nil {
+	if _, _, err := execRoot(t, "--profile", "me", "auth", "import", "--from", gdir); err != nil {
 		t.Fatal(err)
 	}
 	for _, res := range []string{"body-composition", "sleep", "stress", "body-battery", "heart-rate", "respiration", "intensity-minutes"} {
-		if _, _, err := execRoot(t, "--profile", "juan", res, "-o", "json"); err != nil {
+		if _, _, err := execRoot(t, "--profile", "me", res, "-o", "json"); err != nil {
 			t.Errorf("%s fetch: %v", res, err)
 		}
 	}
@@ -179,7 +179,7 @@ func TestConnectExecMocked(t *testing.T) {
 
 	gdir := t.TempDir()
 	writeGarthTokens(t, gdir, time.Now().Add(time.Hour).Unix())
-	if _, _, err := execRoot(t, "--profile", "juan", "auth", "import", "--from", gdir); err != nil {
+	if _, _, err := execRoot(t, "--profile", "me", "auth", "import", "--from", gdir); err != nil {
 		t.Fatal(err)
 	}
 	// Find any runnable leaf under `connect` and execute it — this exercises the parent's
@@ -198,7 +198,7 @@ func TestConnectExecMocked(t *testing.T) {
 	}
 	if leaf != nil {
 		// Tolerate a non-nil error (arg shapes vary); the point is to cover the PreRun/PostRun.
-		_, _, _ = execRoot(t, append([]string{"--profile", "juan"}, leaf...)...)
+		_, _, _ = execRoot(t, append([]string{"--profile", "me"}, leaf...)...)
 	}
 }
 
@@ -230,10 +230,10 @@ func TestAPINonJSONResponse(t *testing.T) {
 
 	gdir := t.TempDir()
 	writeGarthTokens(t, gdir, time.Now().Add(time.Hour).Unix())
-	if _, _, err := execRoot(t, "--profile", "juan", "auth", "import", "--from", gdir); err != nil {
+	if _, _, err := execRoot(t, "--profile", "me", "auth", "import", "--from", gdir); err != nil {
 		t.Fatal(err)
 	}
-	out, _, err := execRoot(t, "--profile", "juan", "api", "/x")
+	out, _, err := execRoot(t, "--profile", "me", "api", "/x")
 	if err != nil {
 		t.Fatalf("api non-JSON: %v", err)
 	}

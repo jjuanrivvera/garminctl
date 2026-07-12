@@ -9,7 +9,7 @@ garminctl stress [flags]
 ### Examples
 
 ```
-  garminctl --profile juan stress --date 2026-07-10 -o json
+  garminctl --profile me stress --date 2026-07-10 -o json
 ```
 
 ### Options

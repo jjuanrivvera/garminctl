@@ -16,8 +16,8 @@ garminctl auth import [flags]
 ### Examples
 
 ```
-  garminctl --profile juan auth import --from ~/.garminconnect
-  garminctl --profile vane auth import --from ~/.garminconnect-vane
+  garminctl --profile me auth import --from ~/.garminconnect
+  garminctl --profile alt auth import --from ~/.garminconnect-alt
 ```
 
 ### Options

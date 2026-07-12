@@ -9,7 +9,7 @@ garminctl heart-rate [flags]
 ### Examples
 
 ```
-  garminctl --profile juan heart-rate --date 2026-07-10 -o json
+  garminctl --profile me heart-rate --date 2026-07-10 -o json
 ```
 
 ### Options

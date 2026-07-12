@@ -9,7 +9,7 @@ garminctl intensity-minutes [flags]
 ### Examples
 
 ```
-  garminctl --profile juan intensity-minutes --date 2026-07-10 -o json
+  garminctl --profile me intensity-minutes --date 2026-07-10 -o json
 ```
 
 ### Options

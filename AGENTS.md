@@ -52,7 +52,7 @@ MCP-only operation is the hard guarantee; the Bash rails are best-effort.
   use `t.Context()`.
 - Secrets live in the OS keyring — never in config-in-repo, code, or commit messages. The
   garth import path is read-only on the token files.
-- Never cross the Juan/Vane account boundary: they are separate profiles by design.
+- Never cross account boundaries: profiles are separate by design.
 - The refresh guarantee is the whole point — the typed surface refreshes through go-garmin and
   `getClient`'s `save()` persists the new token. Don't add a code path that reads data without
   going through that save-back.

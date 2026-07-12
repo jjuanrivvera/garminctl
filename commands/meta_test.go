@@ -38,26 +38,26 @@ func TestConfigListUsePath(t *testing.T) {
 	t.Setenv("XDG_CONFIG_HOME", t.TempDir())
 	t.Setenv("GARMINCTL_PROFILE", "")
 	c := &config.Config{}
-	c.AddProfile("juan")
-	c.AddProfile("vane")
+	c.AddProfile("me")
+	c.AddProfile("alt")
 	if err := config.Save(c); err != nil {
 		t.Fatal(err)
 	}
 
 	out, _, err := execRoot(t, "config", "list")
-	if err != nil || !strings.Contains(out, "juan") || !strings.Contains(out, "vane") {
+	if err != nil || !strings.Contains(out, "me") || !strings.Contains(out, "alt") {
 		t.Fatalf("config list: err=%v out=%q", err, out)
 	}
-	if !strings.Contains(out, "* juan") {
+	if !strings.Contains(out, "* me") {
 		t.Errorf("first profile should be default: %q", out)
 	}
 
-	if _, _, err := execRoot(t, "config", "use", "vane"); err != nil {
+	if _, _, err := execRoot(t, "config", "use", "alt"); err != nil {
 		t.Fatalf("config use: %v", err)
 	}
 	out, _, _ = execRoot(t, "config", "list")
-	if !strings.Contains(out, "* vane") {
-		t.Errorf("default should switch to vane: %q", out)
+	if !strings.Contains(out, "* alt") {
+		t.Errorf("default should switch to alt: %q", out)
 	}
 
 	pathOut, _, err := execRoot(t, "config", "path")
@@ -76,14 +76,14 @@ func TestDoctorHealthy(t *testing.T) {
 	t.Setenv("GARMINCTL_PROFILE", "")
 	gdir := t.TempDir()
 	writeGarthTokens(t, gdir, time.Now().Add(time.Hour).Unix())
-	if _, _, err := execRoot(t, "--profile", "juan", "auth", "import", "--from", gdir); err != nil {
+	if _, _, err := execRoot(t, "--profile", "me", "auth", "import", "--from", gdir); err != nil {
 		t.Fatal(err)
 	}
 	out, _, err := execRoot(t, "doctor")
 	if err != nil {
 		t.Fatalf("doctor should be healthy: %v (%s)", err, out)
 	}
-	if !strings.Contains(out, "juan") || !strings.Contains(out, "token valid") {
+	if !strings.Contains(out, "me") || !strings.Contains(out, "token valid") {
 		t.Errorf("doctor output: %q", out)
 	}
 }
@@ -114,12 +114,12 @@ func TestInitImportsAndReportsMissing(t *testing.T) {
 	// Present dir → import.
 	gdir := t.TempDir()
 	writeGarthTokens(t, gdir, time.Now().Add(time.Hour).Unix())
-	out, _, err = execRoot(t, "--profile", "juan", "init", "--from", gdir)
+	out, _, err = execRoot(t, "--profile", "me", "init", "--from", gdir)
 	if err != nil || !strings.Contains(out, "imported") {
 		t.Fatalf("init import: err=%v out=%q", err, out)
 	}
 	// The imported profile is usable.
-	if status, _, err := execRoot(t, "--profile", "juan", "auth", "status"); err != nil || !strings.Contains(status, "true") {
+	if status, _, err := execRoot(t, "--profile", "me", "auth", "status"); err != nil || !strings.Contains(status, "true") {
 		t.Errorf("status after init: err=%v out=%q", err, status)
 	}
 }
@@ -151,12 +151,12 @@ func TestAPICommandDryRunAndMocked(t *testing.T) {
 	t.Setenv("GARMINCTL_PROFILE", "")
 	gdir := t.TempDir()
 	writeGarthTokens(t, gdir, time.Now().Add(time.Hour).Unix())
-	if _, _, err := execRoot(t, "--profile", "juan", "auth", "import", "--from", gdir); err != nil {
+	if _, _, err := execRoot(t, "--profile", "me", "auth", "import", "--from", gdir); err != nil {
 		t.Fatal(err)
 	}
 
 	// --dry-run prints a curl with the token redacted, no network.
-	out, _, err := execRoot(t, "--profile", "juan", "--dry-run", "api", "/userprofile-service/userprofile")
+	out, _, err := execRoot(t, "--profile", "me", "--dry-run", "api", "/userprofile-service/userprofile")
 	if err != nil || !strings.Contains(out, "curl") {
 		t.Fatalf("dry-run api: err=%v out=%q", err, out)
 	}
@@ -167,7 +167,7 @@ func TestAPICommandDryRunAndMocked(t *testing.T) {
 	// Mocked transport returns {} — the command renders it.
 	testHTTPClient = mockOK()
 	t.Cleanup(func() { testHTTPClient = nil })
-	if _, _, err := execRoot(t, "--profile", "juan", "api", "/userprofile-service/userprofile", "-o", "json"); err != nil {
+	if _, _, err := execRoot(t, "--profile", "me", "api", "/userprofile-service/userprofile", "-o", "json"); err != nil {
 		t.Errorf("mocked api: %v", err)
 	}
 }
@@ -199,7 +199,7 @@ func TestDoctorExpiredTokenStillHealthy(t *testing.T) {
 	t.Setenv("GARMINCTL_PROFILE", "")
 	gdir := t.TempDir()
 	writeGarthTokens(t, gdir, time.Now().Add(-time.Hour).Unix()) // already expired
-	if _, _, err := execRoot(t, "--profile", "juan", "auth", "import", "--from", gdir); err != nil {
+	if _, _, err := execRoot(t, "--profile", "me", "auth", "import", "--from", gdir); err != nil {
 		t.Fatal(err)
 	}
 	out, _, err := execRoot(t, "doctor")
@@ -217,10 +217,10 @@ func TestAPIDryRunWithBody(t *testing.T) {
 	t.Setenv("GARMINCTL_PROFILE", "")
 	gdir := t.TempDir()
 	writeGarthTokens(t, gdir, time.Now().Add(time.Hour).Unix())
-	if _, _, err := execRoot(t, "--profile", "juan", "auth", "import", "--from", gdir); err != nil {
+	if _, _, err := execRoot(t, "--profile", "me", "auth", "import", "--from", gdir); err != nil {
 		t.Fatal(err)
 	}
-	out, _, err := execRoot(t, "--profile", "juan", "--dry-run", "api", "/weight-service/weight", "-X", "POST", "--data", `{"value":72.5}`)
+	out, _, err := execRoot(t, "--profile", "me", "--dry-run", "api", "/weight-service/weight", "-X", "POST", "--data", `{"value":72.5}`)
 	if err != nil {
 		t.Fatalf("dry-run api with body: %v", err)
 	}

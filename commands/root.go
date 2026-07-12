@@ -30,10 +30,10 @@ func NewRootCmd() *cobra.Command {
 rate, stress, body battery, respiration, and intensity minutes — plus the full Connect endpoint
 surface via ` + "`connect`" + `, with named profiles for several accounts, OS-keyring token storage,
 and table/json/yaml/csv output.`,
-		Example: `  garminctl auth import --from ~/.garminconnect --profile juan
+		Example: `  garminctl auth import --from ~/.garminconnect --profile me
   garminctl sleep --date 2026-07-09 -o json
   garminctl stress
-  garminctl --profile vane body-composition
+  garminctl --profile alt body-composition
   garminctl doctor`,
 		SilenceUsage:  true,
 		SilenceErrors: true,

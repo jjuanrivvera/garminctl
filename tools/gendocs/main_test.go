@@ -13,10 +13,13 @@ func TestGeneratesReference(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	t.Cleanup(func() { _ = os.Chdir(wd) })
-	if err := os.Chdir(t.TempDir()); err != nil {
+	tmp := t.TempDir()
+	if err := os.Chdir(tmp); err != nil {
 		t.Fatal(err)
 	}
+	// Register the chdir-back AFTER t.TempDir so it runs BEFORE the temp-dir removal (cleanups
+	// are LIFO): on Windows a directory can't be removed while it is the working directory.
+	t.Cleanup(func() { _ = os.Chdir(wd) })
 
 	main()
 

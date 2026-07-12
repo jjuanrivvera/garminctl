@@ -9,7 +9,7 @@ garminctl body-battery [flags]
 ### Examples
 
 ```
-  garminctl --profile juan body-battery --date 2026-07-10 -o json
+  garminctl --profile me body-battery --date 2026-07-10 -o json
 ```
 
 ### Options

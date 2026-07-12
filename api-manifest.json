@@ -7,7 +7,7 @@
   "api_method_total": 68,
   "api_method_source": "github.com/llehouerou/go-garmin endpoint registry (definitions.RegisterAll -> reg.All())",
   "profile_flag": "profile",
-  "profile_noun": "profile (Garmin account, e.g. juan / vane)",
+  "profile_noun": "profile (Garmin account, e.g. me / alt)",
   "resources": [
     {
       "name": "body-composition",

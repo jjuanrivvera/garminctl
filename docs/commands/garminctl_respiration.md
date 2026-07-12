@@ -9,7 +9,7 @@ garminctl respiration [flags]
 ### Examples
 
 ```
-  garminctl --profile juan respiration --date 2026-07-10 -o json
+  garminctl --profile me respiration --date 2026-07-10 -o json
 ```
 
 ### Options

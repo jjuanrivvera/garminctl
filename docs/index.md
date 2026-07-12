@@ -46,7 +46,7 @@ from an existing `garth` / `python-garminconnect` setup, an MCP server, and an a
 ```bash
 # Import an existing garth / python-garminconnect session (no MFA flow needed)
 garminctl init                                     # auto-detects ~/.garminconnect
-garminctl auth import --from ~/.garminconnect --profile juan
+garminctl auth import --from ~/.garminconnect --profile me
 
 # Read your data (each resource takes --date, default today)
 garminctl sleep --date 2026-07-09

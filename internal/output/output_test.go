@@ -13,13 +13,13 @@ type sample struct {
 }
 
 func TestRenderAllFormats(t *testing.T) {
-	v := sample{Weight: 72.5, Name: "juan", Nested: map[string]any{"a": 1}}
+	v := sample{Weight: 72.5, Name: "me", Nested: map[string]any{"a": 1}}
 	for _, format := range []string{"json", "yaml", "csv", "table", "JSON"} {
 		var b bytes.Buffer
 		if err := Render(&b, format, v); err != nil {
 			t.Fatalf("%s: %v", format, err)
 		}
-		if !strings.Contains(b.String(), "juan") {
+		if !strings.Contains(b.String(), "me") {
 			t.Errorf("%s output missing field name: %q", format, b.String())
 		}
 	}

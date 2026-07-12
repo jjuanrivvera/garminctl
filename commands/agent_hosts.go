@@ -120,7 +120,7 @@ deobfuscate() {
 
 # bash_is_blocked returns 0 (true) if the cleaned command contains a blocked garminctl
 # subcommand path at the command position. Between the binary and the subcommand only the
-# KNOWN global flags may appear (garminctl --profile juan auth logout), matched by ${gap}.
+# KNOWN global flags may appear (garminctl --profile me auth logout), matched by ${gap}.
 # Limiting the gap to real flags — not an arbitrary .* — keeps a subcommand VALUE that merely
 # contains the words (garminctl config use "notes about auth logout") from matching.
 bash_is_blocked() {

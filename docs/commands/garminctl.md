@@ -12,10 +12,10 @@ and table/json/yaml/csv output.
 ### Examples
 
 ```
-  garminctl auth import --from ~/.garminconnect --profile juan
+  garminctl auth import --from ~/.garminconnect --profile me
   garminctl sleep --date 2026-07-09 -o json
   garminctl stress
-  garminctl --profile vane body-composition
+  garminctl --profile alt body-composition
   garminctl doctor
 ```
 

@@ -24,13 +24,13 @@ func TestResolvePrecedence(t *testing.T) {
 func TestSaveLoadRoundTrip(t *testing.T) {
 	t.Setenv("XDG_CONFIG_HOME", t.TempDir())
 	c := &Config{}
-	c.AddProfile("juan")
-	c.AddProfile("vane")
-	c.AddProfile("juan") // duplicate ignored
+	c.AddProfile("me")
+	c.AddProfile("alt")
+	c.AddProfile("me") // duplicate ignored
 	if len(c.Profiles) != 2 {
 		t.Fatalf("duplicate not ignored: %v", c.Profiles)
 	}
-	if c.DefaultProfile != "juan" {
+	if c.DefaultProfile != "me" {
 		t.Errorf("first profile should become default: %s", c.DefaultProfile)
 	}
 	if err := Save(c); err != nil {
@@ -40,7 +40,7 @@ func TestSaveLoadRoundTrip(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	if got.DefaultProfile != "juan" || len(got.Profiles) != 2 {
+	if got.DefaultProfile != "me" || len(got.Profiles) != 2 {
 		t.Errorf("round-trip lost data: %+v", got)
 	}
 }
@@ -59,20 +59,22 @@ func TestLoadMissingIsEmpty(t *testing.T) {
 func TestDirAndPathXDG(t *testing.T) {
 	t.Setenv("XDG_CONFIG_HOME", "/x")
 	d, err := Dir()
-	if err != nil || d != "/x/garminctl" {
+	if err != nil || d != filepath.Join("/x", "garminctl") { // filepath.Join keeps it OS-correct
 		t.Errorf("Dir() = %q, %v", d, err)
 	}
 	p, err := Path()
-	if err != nil || p != "/x/garminctl/config.yaml" {
+	if err != nil || p != filepath.Join("/x", "garminctl", "config.yaml") {
 		t.Errorf("Path() = %q, %v", p, err)
 	}
 }
 
 func TestDirHomeFallback(t *testing.T) {
 	t.Setenv("XDG_CONFIG_HOME", "")
-	t.Setenv("HOME", "/tmp/fakehome")
+	home := t.TempDir()
+	t.Setenv("HOME", home)        // os.UserHomeDir on unix
+	t.Setenv("USERPROFILE", home) // os.UserHomeDir on windows
 	d, err := Dir()
-	if err != nil || d != "/tmp/fakehome/.garminctl-cli" {
+	if err != nil || d != filepath.Join(home, ".garminctl-cli") {
 		t.Errorf("Dir() HOME fallback = %q, %v", d, err)
 	}
 }

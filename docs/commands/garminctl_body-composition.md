@@ -9,7 +9,7 @@ garminctl body-composition [flags]
 ### Examples
 
 ```
-  garminctl --profile juan body-composition --date 2026-07-10 -o json
+  garminctl --profile me body-composition --date 2026-07-10 -o json
 ```
 
 ### Options

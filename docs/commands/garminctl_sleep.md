@@ -9,7 +9,7 @@ garminctl sleep [flags]
 ### Examples
 
 ```
-  garminctl --profile juan sleep --date 2026-07-10 -o json
+  garminctl --profile me sleep --date 2026-07-10 -o json
 ```
 
 ### Options

@@ -54,7 +54,7 @@ func newDateResource(use, short string, fetch dateFetch) *cobra.Command {
 		Use:     use,
 		Short:   short,
 		Args:    cobra.NoArgs,
-		Example: fmt.Sprintf("  garminctl --profile juan %s --date 2026-07-10 -o json", use),
+		Example: fmt.Sprintf("  garminctl --profile me %s --date 2026-07-10 -o json", use),
 		RunE: func(cmd *cobra.Command, _ []string) error {
 			date := time.Now()
 			if dateStr != "" {

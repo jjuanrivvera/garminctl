@@ -61,7 +61,7 @@ func TestHookScript_BashExecution(t *testing.T) {
 	}{
 		// --- blocked commands ---
 		{"auth_logout_denied", bashPayload("garminctl auth logout"), true},
-		{"auth_logout_profile_denied", bashPayload("garminctl --profile juan auth logout"), true},
+		{"auth_logout_profile_denied", bashPayload("garminctl --profile me auth logout"), true},
 		{"alias_set_denied", bashPayload(`garminctl alias set kill "auth logout"`), true},
 		// --- obfuscation ---
 		{"quote_split_denied", bashPayload(`garminctl auth log""out`), true},
@@ -70,7 +70,7 @@ func TestHookScript_BashExecution(t *testing.T) {
 		// --- command position after separators / env prefix ---
 		{"after_semicolon_denied", bashPayload("true; garminctl auth logout"), true},
 		{"after_pipe_denied", bashPayload("echo hi | garminctl auth logout"), true},
-		{"env_prefix_denied", bashPayload("GARMINCTL_PROFILE=juan garminctl auth logout"), true},
+		{"env_prefix_denied", bashPayload("GARMINCTL_PROFILE=me garminctl auth logout"), true},
 		// --- path-invoked binaries ---
 		{"relative_path_binary_denied", bashPayload("./bin/garminctl auth logout"), true},
 		{"absolute_path_binary_denied", bashPayload("/usr/local/bin/garminctl auth logout"), true},
@@ -78,7 +78,7 @@ func TestHookScript_BashExecution(t *testing.T) {
 		{"api_delete_denied", bashPayload("garminctl api /activity-service/activity/123 -X DELETE"), true},
 		{"api_post_denied", bashPayload("garminctl api /weight-service/weight --method POST --data {}"), true},
 		{"api_put_lowercase_denied", bashPayload("garminctl api /x --method put"), true},
-		{"api_profile_before_denied", bashPayload("garminctl --profile juan api /x -X PUT"), true},
+		{"api_profile_before_denied", bashPayload("garminctl --profile me api /x -X PUT"), true},
 		{"api_compound_read_then_delete_denied", bashPayload("garminctl sleep; garminctl api /x -X DELETE"), true},
 		// --- raw api reads stay allowed ---
 		{"api_get_allowed", bashPayload("garminctl api /usersummary-service/usersummary/daily"), false},

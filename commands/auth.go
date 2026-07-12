@@ -39,8 +39,8 @@ func newAuthImportCmd() *cobra.Command {
 ~/.garminconnect) into garminctl's keyring under the active profile. No login required — the
 OAuth1 token (valid ~1 year) drives OAuth2 refresh from here, so this fixes the recurring
 "username and password are required" failure of a cron that never refreshed its cached tokens.`,
-		Example: `  garminctl --profile juan auth import --from ~/.garminconnect
-  garminctl --profile vane auth import --from ~/.garminconnect-vane`,
+		Example: `  garminctl --profile me auth import --from ~/.garminconnect
+  garminctl --profile alt auth import --from ~/.garminconnect-alt`,
 		Args: cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, _ []string) error {
 			if from == "" {
@@ -73,7 +73,7 @@ func newAuthLoginCmd() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:     "login",
 		Short:   "Log in with Garmin credentials and store the session in the keyring",
-		Example: `  garminctl --profile juan auth login`,
+		Example: `  garminctl --profile me auth login`,
 		Args:    cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, _ []string) error {
 			var err error
