@@ -2,9 +2,11 @@
 
 `garminctl` is a command-line tool for **Garmin Connect**, built to the cliwright standard
 (Go + Cobra + GoReleaser). It wraps [`llehouerou/go-garmin`](https://github.com/llehouerou/go-garmin)
-for the reverse-engineered auth and endpoint surface, and adds keyring sessions, named
-profiles, garth token import, an MCP server, and an agent guard. This file orients an AI agent
-(or human) contributing.
+— which is itself both a library **and** a (broader) `garmin` CLI — for the reverse-engineered
+auth and endpoint surface. garminctl's reason to exist is the packaging layer go-garmin's CLI
+doesn't have: OS-keyring token storage (go-garmin writes a plaintext session file), multiple
+named accounts, garth token import, an agent guard, and prebuilt packages. It re-exposes
+go-garmin's MCP surface too. This file orients an AI agent (or human) contributing.
 
 ## The one rule that matters
 
@@ -53,6 +55,6 @@ MCP-only operation is the hard guarantee; the Bash rails are best-effort.
 - Secrets live in the OS keyring — never in config-in-repo, code, or commit messages. The
   garth import path is read-only on the token files.
 - Never cross account boundaries: profiles are separate by design.
-- The refresh guarantee is the whole point — the typed surface refreshes through go-garmin and
-  `getClient`'s `save()` persists the new token. Don't add a code path that reads data without
-  going through that save-back.
+- go-garmin owns the token refresh (lazy, before each request). garminctl's job is to persist
+  the refreshed token back to the keyring — `getClient`'s `save()` does that. Don't add a code
+  path that reads data without going through that save-back, or a keyring refresh won't stick.

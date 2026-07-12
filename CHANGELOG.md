@@ -10,9 +10,9 @@ Initial release.
 
 ### Added
 
-- **Auth that survives.** Wraps `llehouerou/go-garmin` for OAuth1 → OAuth2 exchange with
-  automatic refresh before every request, persisting the refreshed token back to the keyring —
-  fixing the recurring `GarminConnectAuthenticationError` on long-running setups.
+- **Keyring-backed auth.** Wraps `llehouerou/go-garmin` (which does the OAuth1 → OAuth2 exchange
+  and automatic refresh) and persists the session in the OS keyring instead of a plaintext file,
+  so refreshed tokens survive across runs.
 - **garth import.** `garminctl auth import --from <dir>` translates an existing
   `garth` / `python-garminconnect` session (`~/.garminconnect`) into a keyring profile; the
   token files are read-only. `garminctl init` auto-detects the default directory.
