@@ -1,34 +1,14 @@
 # garminctl
 
-A [Garmin Connect](https://connect.garmin.com) CLI built on
-[`llehouerou/go-garmin`](https://github.com/llehouerou/go-garmin), packaged the
-[cliwright](https://cliwright.jjuanrivvera.com) way: OS-keyring token storage, multiple named
-accounts, one-command import from an existing `garth` / `python-garminconnect` setup, an agent
-safety guard, and prebuilt binaries.
+A [Garmin Connect](https://connect.garmin.com) CLI: read your health and activity data — sleep,
+body composition, stress, heart rate, activities, training metrics, and the full Garmin Connect
+endpoint surface — with OS-keyring token storage, multiple named accounts, an agent safety guard,
+and prebuilt binaries.
 
-## Is garminctl the right tool for you?
-
-go-garmin is **both a Go library and its own CLI** (`garmin`), and that CLI is broader than this
-one — it also covers training metrics, workouts (including writes), the exercise library,
-calendar, and biometric data as first-class commands, and ships its own MCP server. Garmin's auth
-(OAuth1 → OAuth2 exchange with automatic refresh) lives in go-garmin; both tools inherit it.
-
-!!! tip "Prefer the official CLI when it fits"
-    If you want the most complete surface and you're happy with `go install`, a single account,
-    and a plaintext session file, use go-garmin's `garmin` directly:
-    `go install github.com/llehouerou/go-garmin/cmd/garmin@latest`
-
-garminctl is worth it when you want **keyring-encrypted tokens** (go-garmin writes a plaintext
-`~/.config/garmin/session.json`), **multiple named accounts**, **import of existing
-`~/.garminconnect` tokens**, an **agent guard**, table/json/yaml/csv output, and **prebuilt
-packages** (brew / scoop / deb / rpm / apk). It trades some of go-garmin's command breadth for
-those.
-
-!!! note "Coming from a Python setup that died with `GarminConnectAuthenticationError`?"
-    That was a problem in the `garth` / `python-garminconnect` stack, not in go-garmin. Either
-    go-garmin's `garmin` or garminctl refreshes the OAuth2 token correctly from the ~1-year OAuth1
-    token, so either one resolves it. garminctl additionally persists the refreshed token to the
-    keyring.
+Built on [`llehouerou/go-garmin`](https://github.com/llehouerou/go-garmin), the Go library (and
+CLI) that does the Garmin Connect auth and endpoint work. garminctl generates the same command
+surface and adds keyring storage, named profiles, token import, multi-format output
+(`table`/`json`/`yaml`/`csv`), an agent guard, and packaging.
 
 ## Install
 
@@ -59,7 +39,7 @@ those.
 ## Quick start
 
 ```bash
-# Import an existing garth / python-garminconnect session (no MFA flow needed)
+# Import an existing Garmin session (~/.garminconnect); no MFA flow needed
 garminctl init                                     # auto-detects ~/.garminconnect
 garminctl auth import --from ~/.garminconnect --profile me
 
@@ -68,7 +48,7 @@ garminctl sleep --date 2026-07-09
 garminctl body-composition -o json
 garminctl stress
 
-# The full go-garmin registry, promoted to the top level (honoring -o table/yaml/csv)
+# The full endpoint surface at the top level (honoring -o table/yaml/csv)
 garminctl metrics vo2max
 garminctl activities list
 garminctl workouts list

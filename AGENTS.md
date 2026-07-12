@@ -2,7 +2,7 @@
 
 `garminctl` is a command-line tool for **Garmin Connect**, built to the cliwright standard
 (Go + Cobra + GoReleaser). It wraps [`llehouerou/go-garmin`](https://github.com/llehouerou/go-garmin)
-— which is itself both a library **and** a (broader) `garmin` CLI — for the reverse-engineered
+— which is itself both a library **and** its own `garmin` CLI — for the reverse-engineered
 auth and endpoint surface. garminctl's reason to exist is the packaging layer go-garmin's CLI
 doesn't have: OS-keyring token storage (go-garmin writes a plaintext session file), multiple
 named accounts, garth token import, an agent guard, and prebuilt packages. It re-exposes
