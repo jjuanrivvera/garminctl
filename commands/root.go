@@ -29,6 +29,11 @@ func NewRootCmd() *cobra.Command {
 		Long: `garminctl reads your Garmin Connect health and activity data — body composition,
 sleep, steps, heart rate, stress, body battery, and activities — with named profiles for
 several accounts, OS-keyring token storage, and table/json/yaml/csv output.`,
+		Example: `  garminctl auth import --from ~/.garminconnect --profile juan
+  garminctl steps
+  garminctl sleep --date 2026-07-09 -o json
+  garminctl --profile vane body-composition
+  garminctl doctor`,
 		SilenceUsage:  true,
 		SilenceErrors: true,
 	}

@@ -122,14 +122,14 @@ func (c *Client) Do(ctx context.Context, method, path string, body []byte) ([]by
 		_ = resp.Body.Close()
 
 		if resp.StatusCode == http.StatusTooManyRequests || resp.StatusCode >= 500 {
-			lastErr = fmt.Errorf("garmin api %s: HTTP %d", path, resp.StatusCode)
+			lastErr = &APIError{Status: resp.StatusCode, Path: path, Body: string(data)}
 			if idempotent(method) {
 				continue
 			}
 			return data, lastErr
 		}
 		if resp.StatusCode >= 400 {
-			return data, fmt.Errorf("garmin api %s: HTTP %d: %s", path, resp.StatusCode, strings.TrimSpace(string(data)))
+			return data, &APIError{Status: resp.StatusCode, Path: path, Body: string(data)}
 		}
 		return data, nil
 	}
