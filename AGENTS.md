@@ -25,8 +25,10 @@ change to the command surface or a documented behavior — not just `make check`
 - `internal/api/` — a thin authenticated raw client (bearer token, idempotent-only retry,
   `--dry-run` curl) behind `garminctl api`. Deliberately minimal; it does not touch refresh.
 - `commands/` — thin, declarative command files, each registered from its own `init()` via
-  `registerCommand` (zero edits to shared code to add one). `resources.go` is the typed
-  read surface; `connect.go` bridges go-garmin's full 68-endpoint registry.
+  `registerCommand` (zero edits to shared code to add one). `resources.go` is the 7 curated
+  shortcuts; `connect.go` promotes go-garmin's full 68-endpoint registry to top-level commands
+  (matching go-garmin's `garmin` CLI), re-rendering their JSON through our formatter so `-o`
+  works. `sleep` from the registry is skipped — the curated resource shadows it.
 - `internal/{config,auth,output,version}` — profiles + manual precedence (no Viper), keyring
   token storage (+ encrypted-file fallback), the table/json/yaml/csv renderer, build metadata.
 - `cmd/garminctl/main.go` — entry point: `signal.NotifyContext` (Ctrl-C cancels in-flight
@@ -34,13 +36,14 @@ change to the command surface or a documented behavior — not just `make check`
 
 ## Agent safety
 
-`garminctl agent guard --host claude-code` emits a PreToolUse hook. garminctl's surface is
-read-only, so the guard blocks only the mutation vectors:
+`garminctl agent guard --host claude-code` emits a PreToolUse hook. garminctl is read-focused,
+so the guard blocks the few mutation vectors:
 
+- `workouts create|update|delete|schedule|unschedule` — the only typed writes (from the promoted
+  registry). Also kept out of the MCP tool surface (`excludedFromMCP`).
 - `auth logout` — deletes the stored session from the keyring;
 - `alias set` — could mint a shorthand that expands to a blocked command;
-- `api` with a write HTTP method (`-X POST|PUT|DELETE|PATCH`) — the only path that mutates
-  Garmin data. `api` GET (a read) passes.
+- `api` with a write HTTP method (`-X POST|PUT|DELETE|PATCH`). `api` GET (a read) passes.
 
 The hook de-obfuscates quote/backslash tricks, catches path-invoked binaries
 (`./bin/garminctl`), tolerates the known global flags between the binary and the subcommand,

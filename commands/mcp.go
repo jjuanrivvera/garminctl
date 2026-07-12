@@ -6,11 +6,12 @@ import (
 )
 
 // excludedFromMCP are command-name substrings kept out of the MCP tool surface: setup/meta
-// commands an agent should not drive, and the raw `api` escape hatch (which would bypass the
-// typed, read-only resource surface). The `mcp` and `agent` subtrees are excluded too so an
-// agent can neither re-enter the server nor disable its own guardrails.
+// commands an agent should not drive, the raw `api` escape hatch (which would bypass the typed
+// surface), and `workouts` (the one group with writes — create/update/delete/schedule). The
+// `mcp` and `agent` subtrees are excluded too so an agent can neither re-enter the server nor
+// disable its own guardrails.
 var excludedFromMCP = []string{
-	"agent", "auth", "config", "alias", "init", "doctor", "completion", "version", "api",
+	"agent", "auth", "config", "alias", "init", "doctor", "completion", "version", "api", "workouts",
 }
 
 // secretFlags must never reach the MCP tool schema: an agent must not switch the account it

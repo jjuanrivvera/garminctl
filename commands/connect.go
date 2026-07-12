@@ -1,54 +1,81 @@
 package commands
 
 import (
-	"os"
+	"bytes"
+	"encoding/json"
 
 	"github.com/spf13/cobra"
 
 	"github.com/llehouerou/go-garmin/endpoint"
 	"github.com/llehouerou/go-garmin/endpoint/definitions"
+
+	"github.com/jjuanrivvera/garminctl/internal/output"
 )
 
+// curatedShadow lists registry command names already provided by a friendlier curated resource,
+// so promoting the registry to the top level doesn't collide with them. Only `sleep` overlaps.
+var curatedShadow = map[string]bool{"sleep": true}
+
 func init() {
-	registerCommand(func(root *cobra.Command) { root.AddCommand(newConnectCmd()) })
+	registerCommand(func(root *cobra.Command) {
+		for _, c := range newRegistryCommands() {
+			root.AddCommand(c)
+		}
+	})
 }
 
-// newConnectCmd exposes the full go-garmin endpoint registry (every documented Garmin Connect
-// operation) under `garminctl connect …`, so the CLI covers the complete API surface, not just
-// the curated top-level resources. The active profile's client is resolved per invocation and
-// any OAuth2 refresh is persisted back to the keyring afterward. Output is JSON.
-func newConnectCmd() *cobra.Command {
+// newRegistryCommands promotes go-garmin's full endpoint registry (every documented Garmin
+// Connect operation — metrics, activities, workouts, devices, exercises, calendar, biometric,
+// …) to top-level commands, matching go-garmin's own `garmin` CLI. Each group resolves the
+// active profile's client per invocation, re-renders the endpoint's JSON through garminctl's
+// formatter (so `-o table|yaml|csv` works — go-garmin emits JSON only), and persists any OAuth2
+// refresh back to the keyring. The curated resources (sleep, stress, body-composition, …) remain
+// as friendlier shortcuts for the common reads.
+func newRegistryCommands() []*cobra.Command {
 	reg := endpoint.NewRegistry()
 	definitions.RegisterAll(reg)
 	gen := endpoint.NewCLIGenerator(reg)
-	gen.SetOutput(os.Stdout)
 
+	// Shared across the generated groups; only one command runs per process, so a single buffer
+	// and save-func are safe (set in PreRun, consumed in PostRun).
+	var buf bytes.Buffer
 	var save func() error
-	parent := &cobra.Command{
-		Use:   "connect",
-		Short: "The full Garmin Connect endpoint surface (every documented operation)",
-		Long: `connect exposes the complete Garmin Connect endpoint registry — every documented
-operation, grouped by service (sleep, wellness, activities, metrics, devices, …). These are the
-raw endpoints with JSON output; the curated top-level commands (body-composition, sleep, …) are
-friendlier for the common cases.`,
-		// The nearest PersistentPreRunE runs before any endpoint's RunE, so we can set the
-		// per-profile client here (it's read at call time by the generated handlers).
-		PersistentPreRunE: func(cmd *cobra.Command, _ []string) error {
-			c, s, _, err := getClient(cmd.Context())
+
+	var cmds []*cobra.Command
+	for _, c := range gen.GenerateCommands() {
+		if curatedShadow[c.Name()] {
+			continue
+		}
+		// The nearest PersistentPreRunE runs before any endpoint's RunE: wire the per-profile
+		// client and redirect the generator's JSON into our buffer.
+		c.PersistentPreRunE = func(cmd *cobra.Command, _ []string) error {
+			cl, s, _, err := getClient(cmd.Context())
 			if err != nil {
 				return err
 			}
-			gen.SetClient(c)
+			gen.SetClient(cl)
 			save = s
+			buf.Reset()
+			gen.SetOutput(&buf)
 			return nil
-		},
-		PersistentPostRunE: func(_ *cobra.Command, _ []string) error {
+		}
+		c.PersistentPostRunE = func(cmd *cobra.Command, _ []string) error {
+			if buf.Len() > 0 {
+				var v any
+				if json.Unmarshal(buf.Bytes(), &v) == nil {
+					if err := output.Render(cmd.OutOrStdout(), gf.output, v); err != nil {
+						return err
+					}
+				} else { // non-JSON (rare) — pass through verbatim
+					_, _ = cmd.OutOrStdout().Write(buf.Bytes())
+				}
+			}
 			if save != nil {
 				return save()
 			}
 			return nil
-		},
+		}
+		cmds = append(cmds, c)
 	}
-	parent.AddCommand(gen.GenerateCommands()...)
-	return parent
+	return cmds
 }

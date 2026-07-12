@@ -8,11 +8,19 @@ import (
 )
 
 // blockedBashPaths are garminctl subcommand paths an agent must never run on the Bash surface.
-// garminctl's typed commands are read-only Garmin Connect data, so there is no destructive-data
-// taxonomy — only these two indirect vectors: deleting the stored session and minting a new
-// alias that could expand to a blocked command. The raw `api` hatch is gated separately (by
-// HTTP method) inside the hook.
-var blockedBashPaths = []string{"alias set", "auth logout"}
+// garminctl is read-focused, but promoting go-garmin's full registry brings in workout
+// management (create/update/delete/schedule/unschedule) — the only typed writes — plus the two
+// indirect vectors (deleting the stored session, minting an alias that expands to a blocked
+// command). The raw `api` hatch is gated separately (by HTTP method) inside the hook.
+var blockedBashPaths = []string{
+	"alias set",
+	"auth logout",
+	"workouts create",
+	"workouts update",
+	"workouts delete",
+	"workouts schedule",
+	"workouts unschedule",
+}
 
 // bashPattern is the Bash permission pattern a host gates for a garminctl subcommand path.
 func bashPattern(path string) string { return "Bash(garminctl " + path + ":*)" }
@@ -29,15 +37,15 @@ func init() {
 		guard := &cobra.Command{
 			Use:   "guard --host <claude-code|codex|opencode>",
 			Short: "Generate agent-safety config that blocks mutating garminctl operations",
-			Long: `garminctl's surface is read-only Garmin Connect health data, so the guard blocks the
-few mutation vectors rather than a rich destructive taxonomy:
+			Long: `garminctl's surface is read-focused Garmin Connect data, so the guard blocks the
+handful of mutation vectors rather than a rich destructive taxonomy:
 
-  • the raw "api" escape hatch with a write method (-X POST|PUT|DELETE|PATCH) — the only way
-    to mutate Garmin data through garminctl;
+  • "workouts create|update|delete|schedule|unschedule" — the only typed writes;
+  • the raw "api" escape hatch with a write method (-X POST|PUT|DELETE|PATCH);
   • "auth logout" — deletes the stored session from the keyring;
   • "alias set" — could mint a shorthand that expands to a blocked command before cobra parses.
 
-Reads — every resource, every "connect" endpoint, and "api" GET — are allowed.
+Reads — every resource, every promoted registry endpoint, and "api" GET — are allowed.
 
 For claude-code the output includes a PreToolUse hook (.claude/hooks/garminctl-guard.sh) that
 strips quote/backslash obfuscation, matches the binary even when path-invoked

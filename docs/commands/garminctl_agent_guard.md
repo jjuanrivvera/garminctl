@@ -4,15 +4,15 @@ Generate agent-safety config that blocks mutating garminctl operations
 
 ### Synopsis
 
-garminctl's surface is read-only Garmin Connect health data, so the guard blocks the
-few mutation vectors rather than a rich destructive taxonomy:
+garminctl's surface is read-focused Garmin Connect data, so the guard blocks the
+handful of mutation vectors rather than a rich destructive taxonomy:
 
-  • the raw "api" escape hatch with a write method (-X POST|PUT|DELETE|PATCH) — the only way
-    to mutate Garmin data through garminctl;
+  • "workouts create|update|delete|schedule|unschedule" — the only typed writes;
+  • the raw "api" escape hatch with a write method (-X POST|PUT|DELETE|PATCH);
   • "auth logout" — deletes the stored session from the keyring;
   • "alias set" — could mint a shorthand that expands to a blocked command before cobra parses.
 
-Reads — every resource, every "connect" endpoint, and "api" GET — are allowed.
+Reads — every resource, every promoted registry endpoint, and "api" GET — are allowed.
 
 For claude-code the output includes a PreToolUse hook (.claude/hooks/garminctl-guard.sh) that
 strips quote/backslash obfuscation, matches the binary even when path-invoked

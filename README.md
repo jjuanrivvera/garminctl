@@ -28,14 +28,16 @@ go install github.com/llehouerou/go-garmin/cmd/garmin@latest
 | Token storage | **OS keyring** (+ encrypted-file fallback) | plaintext `~/.config/garmin/session.json` |
 | Accounts | **multiple named profiles** (you + partner) | single session |
 | Import existing tokens | **`garth` / `~/.garminconnect` import** | fresh `login` only |
-| Output | table / json / yaml / csv | json |
+| Output | **table / json / yaml / csv** (everywhere) | json |
 | Install | **brew / scoop / deb / rpm / apk** + install.sh | `go install` |
 | Agent guard | **yes** (PreToolUse hook) | — |
 | MCP server | yes | yes |
-| Typed data surface | sleep, body-composition, stress, body-battery, heart-rate, respiration, intensity-minutes (+ everything else via `connect`) | broader: also metrics, workouts, exercises, calendar, biometric |
+| Command surface | the **same full registry** (sleep, wellness, activities, metrics, workouts, exercises, calendar, biometric, hrv, devices, …) **plus 7 curated shortcuts** | full registry |
 
-In short: garminctl trades some of go-garmin's command breadth for keyring security, multiple
-accounts, token import, and prebuilt packages, in the [jjuanrivvera fleet](https://cliwright.jjuanrivvera.com) style.
+Both tools generate their command surface from the same go-garmin endpoint registry, so the data
+coverage is identical. garminctl adds keyring security, multiple accounts, token import,
+multi-format output, an agent guard, and prebuilt packages — in the
+[jjuanrivvera fleet](https://cliwright.jjuanrivvera.com) style.
 
 > **Coming from a Python setup that died with `GarminConnectAuthenticationError`?** That was a
 > problem in the `garth` / `python-garminconnect` stack, not in go-garmin. Either go-garmin's
@@ -92,7 +94,8 @@ garminctl auth status
 
 ## Read your data
 
-Each resource takes an optional `--date` (default today) and honors the global `-o` format:
+The **curated shortcuts** cover the common daily reads — each takes an optional `--date`
+(default today) and honors the global `-o` format:
 
 ```bash
 garminctl sleep --date 2026-07-09
@@ -104,19 +107,27 @@ garminctl respiration
 garminctl intensity-minutes
 ```
 
-### Everything else: the `connect` bridge
+### The full surface
 
-`connect` exposes go-garmin's **full endpoint registry** (68 endpoints) for anything the typed
-resources above don't wrap — metrics, activities, devices, and more:
+go-garmin's complete endpoint registry (68 endpoints) is promoted to the **top level**, grouped
+by service — the same commands as go-garmin's `garmin` CLI, but honoring `-o table/yaml/csv`:
 
 ```bash
-garminctl connect --help                     # list every endpoint group
-garminctl connect activities list
+garminctl metrics vo2max
+garminctl activities list
+garminctl devices list
+garminctl hrv daily
+garminctl weight range --start=2026-07-01 --end=2026-07-09
+garminctl workouts list
+garminctl --help                             # every group at the top level
 ```
+
+Workout **writes** (`create`/`update`/`delete`/`schedule`/`unschedule`) are the only typed
+mutations; the [agent guard](#for-ai-agents) blocks them by default.
 
 ### Raw escape hatch: `api`
 
-For a Connect endpoint neither the resources nor `connect` wrap:
+For a Connect endpoint the typed commands don't wrap:
 
 ```bash
 garminctl api /usersummary-service/usersummary/daily
@@ -146,9 +157,10 @@ garminctl mcp                                   # expose the read surface as MCP
 garminctl agent guard --host claude-code        # emit a PreToolUse safety hook
 ```
 
-garminctl's typed surface is read-only, so the guard blocks only the mutation vectors: `auth
-logout` (deletes the session), `alias set` (mints indirections), and `api` with a write method.
-See [AGENTS.md](AGENTS.md).
+garminctl is read-focused, so the guard blocks the few mutation vectors: `workouts`
+create/update/delete/schedule/unschedule, `api` with a write method, `auth logout` (deletes the
+session), and `alias set` (mints indirections). `workouts` is also kept out of the MCP tool
+surface. See [AGENTS.md](AGENTS.md).
 
 ## Diagnostics
 

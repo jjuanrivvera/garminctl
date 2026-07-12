@@ -4,6 +4,23 @@ All notable changes to garminctl are documented here. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project adheres to
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Changed
+
+- **Full surface at the top level.** go-garmin's complete endpoint registry (metrics, activities,
+  workouts, devices, exercises, calendar, biometric, hrv, weight, wellness, …) is now promoted to
+  top-level commands, matching go-garmin's own `garmin` CLI — instead of being nested under
+  `connect` (removed). The 7 curated shortcuts (sleep, body-composition, stress, …) remain. The
+  promoted commands re-render go-garmin's JSON through garminctl's formatter, so `-o table/yaml/csv`
+  works on them too (go-garmin emits JSON only).
+
+### Added
+
+- **Workout-write guardrails.** Promoting the registry brings in `workouts`
+  create/update/delete/schedule/unschedule (the only typed writes). The agent guard now blocks
+  them on the Bash surface, and `workouts` is excluded from the MCP tool surface.
+
 ## [0.1.0] - 2026-07-11
 
 Initial release.

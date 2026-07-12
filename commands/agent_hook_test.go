@@ -63,6 +63,11 @@ func TestHookScript_BashExecution(t *testing.T) {
 		{"auth_logout_denied", bashPayload("garminctl auth logout"), true},
 		{"auth_logout_profile_denied", bashPayload("garminctl --profile me auth logout"), true},
 		{"alias_set_denied", bashPayload(`garminctl alias set kill "auth logout"`), true},
+		// --- workout writes (the only typed mutations) ---
+		{"workouts_delete_denied", bashPayload("garminctl workouts delete W1"), true},
+		{"workouts_create_denied", bashPayload("garminctl workouts create --file w.json"), true},
+		{"workouts_unschedule_denied", bashPayload("garminctl workouts unschedule S1"), true},
+		{"workouts_delete_profile_denied", bashPayload("garminctl --profile me workouts delete W1"), true},
 		// --- obfuscation ---
 		{"quote_split_denied", bashPayload(`garminctl auth log""out`), true},
 		{"single_quote_split_denied", bashPayload(`garminctl auth log''out`), true},
@@ -86,6 +91,8 @@ func TestHookScript_BashExecution(t *testing.T) {
 		{"api_delete_in_value_allowed", bashPayload(`garminctl api /x --data '{"note":"delete later"}'`), false},
 		// --- benign lookalikes that must stay allowed ---
 		{"sleep_allowed", bashPayload("garminctl sleep"), false},
+		{"workouts_list_allowed", bashPayload("garminctl workouts list"), false},
+		{"workouts_get_allowed", bashPayload("garminctl workouts get W1"), false},
 		{"body_comp_allowed", bashPayload("garminctl body-composition --date 2026-07-10"), false},
 		{"auth_status_allowed", bashPayload("garminctl auth status"), false},
 		{"cat_file_allowed", bashPayload("cat auth_logout.go"), false},

@@ -63,13 +63,17 @@ those.
 garminctl init                                     # auto-detects ~/.garminconnect
 garminctl auth import --from ~/.garminconnect --profile me
 
-# Read your data (each resource takes --date, default today)
+# Curated shortcuts for common daily reads (--date defaults to today)
 garminctl sleep --date 2026-07-09
 garminctl body-composition -o json
 garminctl stress
 
-# Anything the typed resources don't wrap: the full endpoint registry, or a raw request
-garminctl connect --help
+# The full go-garmin registry, promoted to the top level (honoring -o table/yaml/csv)
+garminctl metrics vo2max
+garminctl activities list
+garminctl workouts list
+
+# Or a raw request for anything else
 garminctl api /usersummary-service/usersummary/daily
 ```
 

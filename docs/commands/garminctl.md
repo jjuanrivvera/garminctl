@@ -31,21 +31,34 @@ and table/json/yaml/csv output.
 
 ### SEE ALSO
 
+* [garminctl activities](garminctl_activities.md)	 - activities commands
 * [garminctl agent](garminctl_agent.md)	 - AI-agent integration helpers
 * [garminctl api](garminctl_api.md)	 - Make a raw authenticated request to the Garmin Connect API
 * [garminctl auth](garminctl_auth.md)	 - Manage Garmin Connect authentication
+* [garminctl biometric](garminctl_biometric.md)	 - biometric commands
 * [garminctl body-battery](garminctl_body-battery.md)	 - Body Battery events for a day
 * [garminctl body-composition](garminctl_body-composition.md)	 - Weight, BMI, and body fat for a day
+* [garminctl calendar](garminctl_calendar.md)	 - calendar commands
 * [garminctl completion](garminctl_completion.md)	 - Generate a shell completion script
 * [garminctl config](garminctl_config.md)	 - Manage garminctl configuration and profiles
-* [garminctl connect](garminctl_connect.md)	 - The full Garmin Connect endpoint surface (every documented operation)
+* [garminctl courses](garminctl_courses.md)	 - courses commands
+* [garminctl devices](garminctl_devices.md)	 - devices commands
 * [garminctl doctor](garminctl_doctor.md)	 - Diagnose garminctl setup (config, keyring, sessions)
+* [garminctl exercises](garminctl_exercises.md)	 - exercises commands
+* [garminctl fitnessage](garminctl_fitnessage.md)	 - fitnessage commands
+* [garminctl fitnessstats](garminctl_fitnessstats.md)	 - fitnessstats commands
 * [garminctl heart-rate](garminctl_heart-rate.md)	 - Daily and resting heart rate for a day
+* [garminctl hrv](garminctl_hrv.md)	 - hrv commands
 * [garminctl init](garminctl_init.md)	 - Guided first-time setup (import existing tokens)
 * [garminctl intensity-minutes](garminctl_intensity-minutes.md)	 - Intensity minutes for a day
 * [garminctl mcp](garminctl_mcp.md)	 - MCP server management
+* [garminctl metrics](garminctl_metrics.md)	 - metrics commands
+* [garminctl profile](garminctl_profile.md)	 - profile commands
 * [garminctl respiration](garminctl_respiration.md)	 - All-day respiration for a day
 * [garminctl sleep](garminctl_sleep.md)	 - Sleep stages, duration, and score for a day
 * [garminctl stress](garminctl_stress.md)	 - All-day stress for a day
 * [garminctl version](garminctl_version.md)	 - Print version, commit, and build date
+* [garminctl weight](garminctl_weight.md)	 - weight commands
+* [garminctl wellness](garminctl_wellness.md)	 - wellness commands
+* [garminctl workouts](garminctl_workouts.md)	 - workouts commands
 

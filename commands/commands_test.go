@@ -55,7 +55,7 @@ func writeGarthTokens(t *testing.T, dir string, expiresAt int64) {
 
 func TestNewRootCmdSurface(t *testing.T) {
 	root := NewRootCmd()
-	want := map[string]bool{"auth": false, "body-composition": false, "sleep": false, "connect": false}
+	want := map[string]bool{"auth": false, "body-composition": false, "sleep": false, "metrics": false, "workouts": false}
 	for _, c := range root.Commands() {
 		if _, ok := want[c.Name()]; ok {
 			want[c.Name()] = true
@@ -141,13 +141,21 @@ func TestResourceBadDate(t *testing.T) {
 	}
 }
 
-func TestConnectBridgeBuilds(t *testing.T) {
-	c := newConnectCmd()
-	if c.Name() != "connect" {
-		t.Fatalf("name = %q", c.Name())
+func TestRegistryCommandsPromoted(t *testing.T) {
+	cmds := newRegistryCommands()
+	if len(cmds) < 10 {
+		t.Fatalf("expected the full registry promoted to top level, got %d groups", len(cmds))
 	}
-	if len(c.Commands()) < 5 {
-		t.Errorf("connect should expose many endpoint groups, got %d", len(c.Commands()))
+	names := map[string]bool{}
+	for _, c := range cmds {
+		names[c.Name()] = true
+	}
+	// A known registry group is present; `sleep` is skipped (the curated resource shadows it).
+	if !names["metrics"] || !names["workouts"] || !names["activities"] {
+		t.Errorf("missing expected registry groups: %v", names)
+	}
+	if names["sleep"] {
+		t.Error("registry `sleep` must be skipped — the curated resource provides it")
 	}
 }
 
@@ -170,7 +178,7 @@ func TestResourceSuccessMocked(t *testing.T) {
 	}
 }
 
-func TestConnectExecMocked(t *testing.T) {
+func TestRegistryExecMocked(t *testing.T) {
 	keyring.MockInit()
 	t.Setenv("XDG_CONFIG_HOME", t.TempDir())
 	t.Setenv("GARMINCTL_PROFILE", "")
@@ -182,23 +190,20 @@ func TestConnectExecMocked(t *testing.T) {
 	if _, _, err := execRoot(t, "--profile", "me", "auth", "import", "--from", gdir); err != nil {
 		t.Fatal(err)
 	}
-	// Find any runnable leaf under `connect` and execute it — this exercises the parent's
-	// PersistentPreRunE (per-profile client wiring) and PostRunE (session save-back).
-	connect := newConnectCmd()
-	var leaf []string
-	for _, grp := range connect.Commands() {
-		if len(grp.Commands()) > 0 {
-			leaf = []string{"connect", grp.Name(), grp.Commands()[0].Name()}
-			break
+	// Execute promoted registry leaves at the top level — this exercises each group's
+	// PersistentPreRunE (per-profile client wiring + output capture) and PersistentPostRunE
+	// (re-render through garminctl's formatter + session save-back). Arg/response shapes vary
+	// against the {} mock, so tolerate a non-nil error; the point is to cover the wiring.
+	for _, grp := range newRegistryCommands() {
+		var leaf []string
+		if subs := grp.Commands(); len(subs) > 0 {
+			leaf = []string{grp.Name(), subs[0].Name()}
+		} else if grp.RunE != nil {
+			leaf = []string{grp.Name()}
 		}
-		if grp.RunE != nil || grp.Run != nil {
-			leaf = []string{"connect", grp.Name()}
-			break
+		if leaf != nil {
+			_, _, _ = execRoot(t, append([]string{"--profile", "me"}, leaf...)...)
 		}
-	}
-	if leaf != nil {
-		// Tolerate a non-nil error (arg shapes vary); the point is to cover the PreRun/PostRun.
-		_, _, _ = execRoot(t, append([]string{"--profile", "me"}, leaf...)...)
 	}
 }
 
