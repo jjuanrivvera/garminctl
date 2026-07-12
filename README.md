@@ -129,8 +129,9 @@ garminctl --profile me sleep         # one-off override; env GARMINCTL_PROFILE a
 
 ## Output
 
-`-o table` (default), `json`, `yaml`, `csv`. `table`/`csv` flatten one level so nested objects
-stay one row per field.
+`-o table` (default), `json`, `yaml`, `csv`. A single record flattens one level (one row per
+field); a **list** (e.g. `activities list`, `workouts list`, `history`) renders as a real table —
+a header plus one row per record — so `-o csv` is spreadsheet-ready.
 
 ## For AI agents
 

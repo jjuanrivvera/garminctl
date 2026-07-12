@@ -62,6 +62,21 @@ garminctl history body-composition --from 2026-01-01 -o csv
 garminctl api /usersummary-service/usersummary/daily
 ```
 
+## Offline data
+
+Garmin Connect is pull-only with no history export, so garminctl keeps a local SQLite store.
+Reads cache the day they fetch; `garminctl sync [--from --to] [--metrics …]` backfills a range;
+`garminctl --offline <metric>` then serves a day with no network; and `garminctl history <metric>
+--from --to` renders one row per day — pair it with `-o csv` for a spreadsheet-ready trend. The
+store lives at `<config dir>/store.db` (chmod 0600, per profile).
+
+## For AI agents
+
+`garminctl mcp` exposes the read surface as MCP tools, and `garminctl agent guard --host
+claude-code` emits a PreToolUse safety hook. garminctl is read-focused, so the guard blocks the
+mutation vectors — `workouts` writes, `api` with a write method, `auth logout`, and `alias set`;
+`workouts` and `sync` stay out of the MCP surface.
+
 ## Learn more
 
 - **[Command reference](commands/garminctl.md)** — every command, flag, and example, generated
