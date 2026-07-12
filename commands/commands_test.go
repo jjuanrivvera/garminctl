@@ -25,6 +25,9 @@ func mockOK() *http.Client {
 		if strings.Contains(r.URL.Path, "attery") { // body-battery returns a JSON array
 			body = "[]"
 		}
+		if strings.Contains(r.URL.Path, "steps") { // steps returns an array of daily records
+			body = `[{"calendarDate":"2026-07-10","totalSteps":8234,"stepGoal":10000,"totalDistance":6543.2}]`
+		}
 		return &http.Response{StatusCode: 200, Body: io.NopCloser(strings.NewReader(body)), Header: make(http.Header)}, nil
 	})}
 }
@@ -171,10 +174,33 @@ func TestResourceSuccessMocked(t *testing.T) {
 	if _, _, err := execRoot(t, "--profile", "me", "auth", "import", "--from", gdir); err != nil {
 		t.Fatal(err)
 	}
-	for _, res := range []string{"body-composition", "sleep", "stress", "body-battery", "heart-rate", "respiration", "intensity-minutes"} {
+	for _, res := range []string{"body-composition", "sleep", "stress", "body-battery", "heart-rate", "respiration", "intensity-minutes", "steps"} {
 		if _, _, err := execRoot(t, "--profile", "me", res, "-o", "json"); err != nil {
 			t.Errorf("%s fetch: %v", res, err)
 		}
+	}
+}
+
+// TestStepsFetch exercises the raw-client steps path: the mocked stats/steps endpoint returns an
+// array, fetchSteps unwraps the single day, and the parsed totals reach the rendered output.
+func TestStepsFetch(t *testing.T) {
+	keyring.MockInit()
+	t.Setenv("XDG_CONFIG_HOME", t.TempDir())
+	t.Setenv("GARMINCTL_PROFILE", "")
+	testHTTPClient = mockOK()
+	t.Cleanup(func() { testHTTPClient = nil })
+
+	gdir := t.TempDir()
+	writeGarthTokens(t, gdir, time.Now().Add(time.Hour).Unix())
+	if _, _, err := execRoot(t, "--profile", "me", "auth", "import", "--from", gdir); err != nil {
+		t.Fatal(err)
+	}
+	out, _, err := execRoot(t, "--profile", "me", "steps", "--date", "2026-07-10", "-o", "json")
+	if err != nil {
+		t.Fatalf("steps fetch: %v", err)
+	}
+	if !strings.Contains(out, "8234") { // totalSteps from the mock, proving the array was unwrapped
+		t.Errorf("steps output missing totalSteps: %q", out)
 	}
 }
 

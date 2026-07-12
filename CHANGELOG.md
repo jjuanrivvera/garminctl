@@ -4,6 +4,32 @@ All notable changes to garminctl are documented here. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project adheres to
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.3.0] - 2026-07-12
+
+### Added
+
+- **`steps` — daily step count, goal, and distance.** The last advertised-but-missing curated
+  metric. go-garmin declares a `StepsService` but implements no methods and its registry omits the
+  endpoint, so `steps` fetches Garmin's `/usersummary-service/stats/steps/daily/{date}/{date}`
+  through the raw client. It slots into the curated-metric machinery like the others: `--date`,
+  `-o table/json/yaml/csv`, `--offline`, `history`, and `sync`. Because a raw request doesn't
+  refresh OAuth2 the way a typed go-garmin call does, `steps` first nudges a refresh when the
+  session is near expiry, so it never 401s on a stale token.
+
+### Security
+
+- Bump the Go toolchain to **go1.25.12**, clearing the reachable standard-library advisories
+  (crypto/tls GO-2026-5856, crypto/x509, net/http, net/textproto) that govulncheck flagged.
+
+## [0.2.1] - 2026-07-12
+
+### Fixed
+
+- The hidden secret prompt (`auth login` / `auth import`) now reads in **raw mode** instead of
+  `term.ReadPassword`'s canonical mode (capped at MAX_CANON, 1024 bytes on macOS), so a long
+  pasted token no longer hangs the prompt until Ctrl-C. Bracketed-paste markers are still stripped
+  as a defensive guard.
+
 ## [0.2.0] - 2026-07-11
 
 ### Changed

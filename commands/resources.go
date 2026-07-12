@@ -49,6 +49,9 @@ var curatedResources = []curatedResource{
 		func(ctx context.Context, c *gm.Client, d time.Time) (any, error) {
 			return c.Wellness.GetDailyIntensityMinutes(ctx, d)
 		}},
+	// steps has no go-garmin service method (StepsService is an unimplemented stub) nor a registry
+	// endpoint, so its fetch goes through the raw client — see fetchSteps in steps.go.
+	{"steps", "Daily step count, goal, and distance for a day", fetchSteps},
 }
 
 func init() {

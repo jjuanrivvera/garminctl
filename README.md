@@ -71,6 +71,7 @@ garminctl body-battery
 garminctl heart-rate
 garminctl respiration
 garminctl intensity-minutes
+garminctl steps                              # daily step count, goal, and distance
 ```
 
 ### The full surface

@@ -2,6 +2,8 @@ module github.com/jjuanrivvera/garminctl
 
 go 1.25.5
 
+toolchain go1.25.12
+
 require (
 	github.com/llehouerou/go-garmin v0.0.0-20260217041215-cbf5895e08bf
 	github.com/njayp/ophis v1.1.4

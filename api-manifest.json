@@ -48,6 +48,16 @@
       "name": "intensity-minutes",
       "verbs": [],
       "read_only": true
+    },
+    {
+      "name": "steps",
+      "verbs": [],
+      "read_only": true,
+      "key_fields": [
+        "totalSteps",
+        "stepGoal",
+        "totalDistance"
+      ]
     }
   ],
   "methods": [

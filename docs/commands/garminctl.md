@@ -58,6 +58,7 @@ and table/json/yaml/csv output.
 * [garminctl profile](garminctl_profile.md)	 - profile commands
 * [garminctl respiration](garminctl_respiration.md)	 - All-day respiration for a day
 * [garminctl sleep](garminctl_sleep.md)	 - Sleep stages, duration, and score for a day
+* [garminctl steps](garminctl_steps.md)	 - Daily step count, goal, and distance for a day
 * [garminctl stress](garminctl_stress.md)	 - All-day stress for a day
 * [garminctl sync](garminctl_sync.md)	 - Backfill daily metrics into the local store for offline use
 * [garminctl version](garminctl_version.md)	 - Print version, commit, and build date
