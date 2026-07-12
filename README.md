@@ -1,7 +1,7 @@
 # garminctl
 
 Drive [Garmin Connect](https://connect.garmin.com) from the terminal — body composition,
-sleep, steps, heart rate, stress, body battery, and every other Connect endpoint — with named
+sleep, heart rate, stress, body battery, and every other Connect endpoint — with named
 profiles for several accounts, OS-keyring token storage, and table/json/yaml/csv output.
 
 garminctl wraps [`llehouerou/go-garmin`](https://github.com/llehouerou/go-garmin), which does
@@ -71,7 +71,6 @@ garminctl auth status
 Every resource takes an optional `--date` (default today) and honors the global `-o` format:
 
 ```bash
-garminctl steps
 garminctl sleep --date 2026-07-09
 garminctl body-composition -o json           # weight, BMI, body-fat %
 garminctl stress
@@ -108,7 +107,7 @@ garminctl --dry-run api /userprofile-service/userprofile   # prints the equivale
 ```bash
 garminctl config list                # * marks the default
 garminctl config use vane
-garminctl --profile juan steps       # one-off override; env GARMINCTL_PROFILE also works
+garminctl --profile juan sleep       # one-off override; env GARMINCTL_PROFILE also works
 ```
 
 ## Output

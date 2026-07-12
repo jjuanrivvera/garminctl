@@ -79,20 +79,20 @@ func TestHookScript_BashExecution(t *testing.T) {
 		{"api_post_denied", bashPayload("garminctl api /weight-service/weight --method POST --data {}"), true},
 		{"api_put_lowercase_denied", bashPayload("garminctl api /x --method put"), true},
 		{"api_profile_before_denied", bashPayload("garminctl --profile juan api /x -X PUT"), true},
-		{"api_compound_read_then_delete_denied", bashPayload("garminctl steps; garminctl api /x -X DELETE"), true},
+		{"api_compound_read_then_delete_denied", bashPayload("garminctl sleep; garminctl api /x -X DELETE"), true},
 		// --- raw api reads stay allowed ---
 		{"api_get_allowed", bashPayload("garminctl api /usersummary-service/usersummary/daily"), false},
 		{"api_explicit_get_allowed", bashPayload("garminctl api /x -X GET"), false},
 		{"api_delete_in_value_allowed", bashPayload(`garminctl api /x --data '{"note":"delete later"}'`), false},
 		// --- benign lookalikes that must stay allowed ---
-		{"steps_allowed", bashPayload("garminctl steps"), false},
+		{"sleep_allowed", bashPayload("garminctl sleep"), false},
 		{"body_comp_allowed", bashPayload("garminctl body-composition --date 2026-07-10"), false},
 		{"auth_status_allowed", bashPayload("garminctl auth status"), false},
 		{"cat_file_allowed", bashPayload("cat auth_logout.go"), false},
 		{"other_binary_allowed", bashPayload("mygarminctl auth logout"), false},
 		{"config_use_with_logout_word_allowed", bashPayload(`garminctl config use "notes about auth logout"`), false},
 		// --- MCP branch: garminctl's MCP surface is read-only, so nothing is blocked ---
-		{"mcp_steps_allowed", mcpPayload("mcp__garminctl__garmin_steps"), false},
+		{"mcp_stress_allowed", mcpPayload("mcp__garminctl__garmin_stress"), false},
 		{"mcp_sleep_allowed", mcpPayload("mcp__garminctl__garmin_sleep"), false},
 	}
 
@@ -174,7 +174,7 @@ func TestHookScript_BashExecutionNoJq(t *testing.T) {
 		{"nojq_obfuscated_logout_denied", bashPayload(`garminctl auth log""out`), true},
 		{"nojq_path_binary_denied", bashPayload("/usr/local/bin/garminctl auth logout"), true},
 		{"nojq_api_delete_denied", bashPayload("garminctl api /x -X DELETE"), true},
-		{"nojq_steps_allowed", bashPayload("garminctl steps"), false},
+		{"nojq_sleep_allowed", bashPayload("garminctl sleep"), false},
 		{"nojq_api_get_allowed", bashPayload("garminctl api /usersummary-service/usersummary/daily"), false},
 	}
 

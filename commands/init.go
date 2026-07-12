@@ -66,7 +66,7 @@ To get started, either:
 				fmt.Fprintf(out, `✓ imported tokens from %s into profile %q
 
 Try:
-  garminctl steps
+  garminctl sleep
   garminctl auth status
 `, dir, profile)
 				return nil

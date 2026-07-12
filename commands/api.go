@@ -24,7 +24,7 @@ func init() {
 
 The request is signed with the active profile's session token. The typed commands refresh that
 token through go-garmin and persist it; if a raw call returns HTTP 401, run any resource
-command once (e.g. ` + "`garminctl steps`" + `) to refresh, then retry. With --dry-run, prints the
+command once (e.g. ` + "`garminctl sleep`" + `) to refresh, then retry. With --dry-run, prints the
 equivalent curl (token redacted) instead of sending.`,
 			Args: cobra.ExactArgs(1),
 			Example: `  garminctl api /userprofile-service/userprofile

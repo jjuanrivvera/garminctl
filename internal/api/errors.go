@@ -31,7 +31,7 @@ func (e *APIError) Error() string {
 func hintForStatus(status int) string {
 	switch status {
 	case http.StatusUnauthorized: // 401
-		return "session token rejected — run a resource command (e.g. `garminctl steps`) to refresh, or re-import with `garminctl auth import`"
+		return "session token rejected — run a resource command (e.g. `garminctl sleep`) to refresh, or re-import with `garminctl auth import`"
 	case http.StatusForbidden: // 403
 		return "Garmin denied this request — the endpoint may require a different scope or your account lacks access"
 	case http.StatusNotFound: // 404

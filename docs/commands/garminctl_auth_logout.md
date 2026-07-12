@@ -1,0 +1,27 @@
+## garminctl auth logout
+
+Remove the stored session for the active profile
+
+```
+garminctl auth logout [flags]
+```
+
+### Options
+
+```
+  -h, --help   help for logout
+```
+
+### Options inherited from parent commands
+
+```
+      --dry-run          print the equivalent request instead of sending it
+      --no-color         disable colored output
+  -o, --output string    output format: table|json|yaml|csv (default "table")
+      --profile string   profile (Garmin account) to use; env GARMINCTL_PROFILE
+```
+
+### SEE ALSO
+
+* [garminctl auth](garminctl_auth.md)	 - Manage Garmin Connect authentication
+

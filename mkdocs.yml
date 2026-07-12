@@ -1,0 +1,31 @@
+site_name: garminctl
+site_description: Garmin Connect from the terminal — health data, keyring auth with automatic token refresh, and an MCP server
+site_url: https://jjuanrivvera.github.io/garminctl/
+repo_url: https://github.com/jjuanrivvera/garminctl
+repo_name: jjuanrivvera/garminctl
+theme:
+  name: material
+  palette:
+    - scheme: default
+      primary: teal
+      toggle: { icon: material/brightness-7, name: Switch to dark mode }
+    - scheme: slate
+      primary: teal
+      toggle: { icon: material/brightness-4, name: Switch to light mode }
+  features:
+    - navigation.instant
+    - navigation.sections
+    - navigation.top
+    - content.code.copy
+    - content.tabs.link
+markdown_extensions:
+  - admonition
+  - attr_list
+  - tables
+  - pymdownx.highlight
+  - pymdownx.superfences
+  - pymdownx.tabbed:
+      alternate_style: true
+nav:
+  - Home: index.md
+  - Command reference: commands/garminctl.md

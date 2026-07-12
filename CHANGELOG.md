@@ -19,8 +19,8 @@ Initial release.
 - **Login / status / logout.** Hidden password entry; offline `auth status`.
 - **Named profiles** for multiple accounts, with `config list` / `config use`, the global
   `--profile` flag, and `GARMINCTL_PROFILE`.
-- **Typed read surface:** `body-composition`, `sleep`, `steps`, `heart-rate`, `stress`,
-  `body-battery`, `respiration`, `intensity-minutes` — each with `--date` and json/yaml/csv/table.
+- **Typed read surface:** `body-composition`, `sleep`, `heart-rate`, `stress`, `body-battery`,
+  `respiration`, `intensity-minutes` — each with `--date` and json/yaml/csv/table.
 - **`connect` bridge** exposing go-garmin's full 68-endpoint registry.
 - **`api` escape hatch** — raw authenticated request with `--dry-run` curl (token redacted)
   and idempotent-only retry.
