@@ -17,6 +17,11 @@ All notable changes to garminctl are documented here. The format follows
 
 ### Added
 
+- **Offline store.** A local SQLite database (pure-Go `modernc.org/sqlite`) keeps the health data
+  you fetch. Every read caches its day; `garminctl sync [--from --to] [--metrics …]` backfills a
+  range; `garminctl --offline <metric>` serves a day with no network; and `garminctl history
+  <metric> --from --to` renders one row per day (`-o csv` for a spreadsheet-ready trend). The
+  renderer now turns any array of objects into a real table/CSV, not one wrapped cell.
 - **Workout-write guardrails.** Promoting the registry brings in `workouts`
   create/update/delete/schedule/unschedule (the only typed writes). The agent guard now blocks
   them on the Bash surface, and `workouts` is excluded from the MCP tool surface.

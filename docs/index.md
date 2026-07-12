@@ -2,13 +2,13 @@
 
 A [Garmin Connect](https://connect.garmin.com) CLI: read your health and activity data — sleep,
 body composition, stress, heart rate, activities, training metrics, and the full Garmin Connect
-endpoint surface — with OS-keyring token storage, multiple named accounts, an agent safety guard,
-and prebuilt binaries.
+endpoint surface — with OS-keyring token storage, multiple named accounts, a local offline store,
+an agent safety guard, and prebuilt binaries.
 
 Built on [`llehouerou/go-garmin`](https://github.com/llehouerou/go-garmin), the Go library (and
 CLI) that does the Garmin Connect auth and endpoint work. garminctl generates the same command
-surface and adds keyring storage, named profiles, token import, multi-format output
-(`table`/`json`/`yaml`/`csv`), an agent guard, and packaging.
+surface and adds keyring storage, named profiles, token import, an offline SQLite store,
+multi-format output (`table`/`json`/`yaml`/`csv`), an agent guard, and packaging.
 
 ## Install
 
@@ -52,6 +52,11 @@ garminctl stress
 garminctl metrics vo2max
 garminctl activities list
 garminctl workouts list
+
+# Keep your data offline: backfill a range, then read/trend it with no network
+garminctl sync --from 2026-01-01
+garminctl --offline sleep --date 2026-07-09
+garminctl history body-composition --from 2026-01-01 -o csv
 
 # Or a raw request for anything else
 garminctl api /usersummary-service/usersummary/daily

@@ -29,8 +29,12 @@ change to the command surface or a documented behavior — not just `make check`
   shortcuts; `connect.go` promotes go-garmin's full 68-endpoint registry to top-level commands
   (matching go-garmin's `garmin` CLI), re-rendering their JSON through our formatter so `-o`
   works. `sleep` from the registry is skipped — the curated resource shadows it.
-- `internal/{config,auth,output,version}` — profiles + manual precedence (no Viper), keyring
-  token storage (+ encrypted-file fallback), the table/json/yaml/csv renderer, build metadata.
+- `internal/{config,auth,output,store,version}` — profiles + manual precedence (no Viper), keyring
+  token storage (+ encrypted-file fallback), the table/json/yaml/csv renderer (arrays → real
+  tables), the offline SQLite store (`modernc.org/sqlite`, pure Go; one row per
+  profile/metric/date), build metadata. Reads cache to the store; `sync` backfills; `--offline`
+  and `history` serve from it. Note: the keyring helper is `keyringStore()` (not `store()`) to
+  avoid clashing with the `store` package import.
 - `cmd/garminctl/main.go` — entry point: `signal.NotifyContext` (Ctrl-C cancels in-flight
   work: token refresh, retry backoff) then `commands.Main`.
 

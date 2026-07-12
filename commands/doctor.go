@@ -41,7 +41,7 @@ An expired OAuth2 token is not a failure; the next call refreshes it from the OA
 				}
 
 				for _, p := range c.Profiles {
-					sess, err := store().Get(p)
+					sess, err := keyringStore().Get(p)
 					if err != nil || sess == "" {
 						healthy = false
 						fmt.Fprintf(out, "✗ profile %q: no session in keyring\n", p)

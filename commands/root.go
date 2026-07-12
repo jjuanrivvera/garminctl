@@ -11,6 +11,7 @@ type globalFlags struct {
 	output  string
 	noColor bool
 	dryRun  bool
+	offline bool
 }
 
 var gf globalFlags
@@ -43,6 +44,7 @@ and table/json/yaml/csv output.`,
 	p.StringVarP(&gf.output, "output", "o", "table", "output format: table|json|yaml|csv")
 	p.BoolVar(&gf.noColor, "no-color", false, "disable colored output")
 	p.BoolVar(&gf.dryRun, "dry-run", false, "print the equivalent request instead of sending it")
+	p.BoolVar(&gf.offline, "offline", false, "read from the local store instead of the Garmin API (see `garminctl sync`)")
 	for _, fn := range commandRegistrars {
 		fn(root)
 	}

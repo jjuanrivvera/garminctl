@@ -2,13 +2,13 @@
 
 A [Garmin Connect](https://connect.garmin.com) CLI: read your health and activity data — sleep,
 body composition, stress, heart rate, activities, training metrics, and the full Garmin Connect
-endpoint surface — with OS-keyring token storage, multiple named accounts, an agent safety guard,
-and prebuilt binaries (Homebrew / Scoop / deb / rpm / apk).
+endpoint surface — with OS-keyring token storage, multiple named accounts, a **local offline
+store**, an agent safety guard, and prebuilt binaries (Homebrew / Scoop / deb / rpm / apk).
 
 Built on [`llehouerou/go-garmin`](https://github.com/llehouerou/go-garmin), the Go library (and
 CLI) that does the Garmin Connect auth and endpoint work. garminctl generates the same command
-surface and adds keyring storage, named profiles, token import, multi-format output
-(`table`/`json`/`yaml`/`csv`), an agent guard, and packaging.
+surface and adds keyring storage, named profiles, token import, an offline SQLite store,
+multi-format output (`table`/`json`/`yaml`/`csv`), an agent guard, and packaging.
 
 ## Install
 
@@ -101,6 +101,23 @@ garminctl --dry-run api /userprofile-service/userprofile   # prints the equivale
 ```
 
 `api` signs the request with the active profile's token (redacted under `--dry-run`).
+
+## Offline data
+
+Garmin Connect is pull-only with no history export, so garminctl keeps a local SQLite store. Every
+read caches the day it fetched, and `sync` backfills a range so your data is available with no
+network afterward:
+
+```bash
+garminctl sync                                   # last 7 days, all metrics
+garminctl sync --from 2026-01-01 --metrics sleep,body-composition
+
+garminctl --offline sleep --date 2026-07-09      # served from the store, no API call
+garminctl history body-composition --from 2026-01-01 -o csv   # a trend: one row per day
+```
+
+`history` renders one row per day — with `-o csv` you get a spreadsheet-ready trend. The store
+lives at `<config dir>/store.db` (chmod 0600, per profile).
 
 ## Profiles
 

@@ -17,7 +17,7 @@ import (
 var testHTTPClient *http.Client
 
 // store returns the keyring-backed token store (encrypted-file fallback rooted at the config dir).
-func store() auth.Store {
+func keyringStore() auth.Store {
 	dir, _ := config.Dir()
 	return auth.New(dir)
 }
@@ -27,7 +27,7 @@ func store() auth.Store {
 // the keyring. Defer save() after using the client so a token refreshed mid-call is not lost.
 func getClient(ctx context.Context) (client *gm.Client, save func() error, profile string, err error) {
 	profile = config.Resolve(gf.profile)
-	sessionJSON, err := store().Get(profile)
+	sessionJSON, err := keyringStore().Get(profile)
 	if err != nil || sessionJSON == "" {
 		return nil, nil, profile, fmt.Errorf(
 			"no session for profile %q — run `garminctl auth import` or `garminctl auth login`", profile)
@@ -42,7 +42,7 @@ func getClient(ctx context.Context) (client *gm.Client, save func() error, profi
 			return derr
 		}
 		if dumped != sessionJSON { // only write when the OAuth2 token actually refreshed
-			return store().Set(profile, dumped)
+			return keyringStore().Set(profile, dumped)
 		}
 		return nil
 	}

@@ -52,7 +52,7 @@ To get started, either:
 				if err != nil {
 					return err
 				}
-				if err := store().Set(profile, sessionJSON); err != nil {
+				if err := keyringStore().Set(profile, sessionJSON); err != nil {
 					return err
 				}
 				c, err := config.Load()

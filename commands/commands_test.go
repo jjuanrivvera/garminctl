@@ -250,7 +250,7 @@ func TestAPINonJSONResponse(t *testing.T) {
 func TestStoreHelper(t *testing.T) {
 	keyring.MockInit()
 	t.Setenv("XDG_CONFIG_HOME", t.TempDir())
-	s := store()
+	s := keyringStore()
 	if err := s.Set("p", "sess"); err != nil {
 		t.Fatal(err)
 	}

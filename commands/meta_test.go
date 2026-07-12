@@ -185,7 +185,7 @@ func TestDoctorUnhealthy(t *testing.T) {
 		t.Error("doctor should fail when a profile has no session")
 	}
 	// A corrupt session exercises the unreadable-session branch.
-	if err := store().Set("ghost", "not json"); err != nil {
+	if err := keyringStore().Set("ghost", "not json"); err != nil {
 		t.Fatal(err)
 	}
 	if _, _, err := execRoot(t, "doctor"); err == nil {
@@ -226,5 +226,59 @@ func TestAPIDryRunWithBody(t *testing.T) {
 	}
 	if !strings.Contains(out, "POST") || !strings.Contains(out, "--data") || !strings.Contains(out, "value") {
 		t.Errorf("dry-run curl missing method/body: %q", out)
+	}
+}
+
+func TestSyncOfflineHistory(t *testing.T) {
+	keyring.MockInit()
+	t.Setenv("XDG_CONFIG_HOME", t.TempDir())
+	t.Setenv("GARMINCTL_PROFILE", "")
+	testHTTPClient = mockOK()
+	t.Cleanup(func() { testHTTPClient = nil })
+
+	gdir := t.TempDir()
+	writeGarthTokens(t, gdir, time.Now().Add(time.Hour).Unix())
+	if _, _, err := execRoot(t, "--profile", "me", "auth", "import", "--from", gdir); err != nil {
+		t.Fatal(err)
+	}
+
+	// sync one day of one metric into the store.
+	if _, _, err := execRoot(t, "--profile", "me", "sync", "--from", "2026-07-09", "--to", "2026-07-09", "--metrics", "sleep"); err != nil {
+		t.Fatalf("sync: %v", err)
+	}
+	// unknown metric is rejected.
+	if _, _, err := execRoot(t, "--profile", "me", "sync", "--metrics", "bogus"); err == nil {
+		t.Error("sync with unknown metric should error")
+	}
+	// --from after --to is rejected.
+	if _, _, err := execRoot(t, "--profile", "me", "sync", "--from", "2026-07-10", "--to", "2026-07-01"); err == nil {
+		t.Error("sync with from>to should error")
+	}
+
+	// offline read serves from the store with NO network (mock cleared).
+	testHTTPClient = nil
+	out, _, err := execRoot(t, "--profile", "me", "--offline", "sleep", "--date", "2026-07-09", "-o", "json")
+	if err != nil {
+		t.Fatalf("offline read: %v", err)
+	}
+	if out == "" {
+		t.Error("offline read produced no output")
+	}
+	// offline read of an un-synced date errors clearly.
+	if _, _, err := execRoot(t, "--profile", "me", "--offline", "sleep", "--date", "2020-01-01"); err == nil {
+		t.Error("offline read of un-synced date should error")
+	}
+
+	// history returns the synced day (still offline).
+	hout, _, err := execRoot(t, "--profile", "me", "history", "sleep", "--from", "2026-07-01", "--to", "2026-07-10")
+	if err != nil {
+		t.Fatalf("history: %v", err)
+	}
+	if !strings.Contains(hout, "2026-07-09") {
+		t.Errorf("history missing synced date: %q", hout)
+	}
+	// history for a metric with no stored data errors.
+	if _, _, err := execRoot(t, "--profile", "me", "history", "stress", "--from", "2026-07-01"); err == nil {
+		t.Error("history with no data should error")
 	}
 }

@@ -64,3 +64,22 @@ func TestRenderCollapsesMultiline(t *testing.T) {
 		t.Errorf("multiline value not collapsed: %q", b.String())
 	}
 }
+
+func TestRenderTabularArray(t *testing.T) {
+	rows := []map[string]any{
+		{"date": "2026-07-08", "weight": 72.5},
+		{"date": "2026-07-09", "weight": 72.1},
+	}
+	var b bytes.Buffer
+	if err := Render(&b, "csv", rows); err != nil {
+		t.Fatal(err)
+	}
+	got := b.String()
+	// Header (sorted keys) + one row per record.
+	if !strings.Contains(got, "date,weight") {
+		t.Errorf("missing header row: %q", got)
+	}
+	if !strings.Contains(got, "2026-07-08,72.5") || !strings.Contains(got, "2026-07-09,72.1") {
+		t.Errorf("missing data rows: %q", got)
+	}
+}

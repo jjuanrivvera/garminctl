@@ -12,6 +12,9 @@ import (
 // disable its own guardrails.
 var excludedFromMCP = []string{
 	"agent", "auth", "config", "alias", "init", "doctor", "completion", "version", "api", "workouts",
+	// `sync` bulk-fetches a date range — not something an agent should trigger. (`history`, a local
+	// read, stays exposed.)
+	"sync",
 }
 
 // secretFlags must never reach the MCP tool schema: an agent must not switch the account it

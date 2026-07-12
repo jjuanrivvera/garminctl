@@ -52,7 +52,7 @@ OAuth1 token (valid ~1 year) drives OAuth2 refresh from here, so this fixes the 
 				return err
 			}
 			profile := config.Resolve(gf.profile)
-			if err := store().Set(profile, sessionJSON); err != nil {
+			if err := keyringStore().Set(profile, sessionJSON); err != nil {
 				return fmt.Errorf("store session: %w", err)
 			}
 			cfg, _ := config.Load()
@@ -95,7 +95,7 @@ func newAuthLoginCmd() *cobra.Command {
 				return err
 			}
 			profile := config.Resolve(gf.profile)
-			if err := store().Set(profile, sessionJSON); err != nil {
+			if err := keyringStore().Set(profile, sessionJSON); err != nil {
 				return err
 			}
 			cfg, _ := config.Load()
@@ -116,7 +116,7 @@ func newAuthStatusCmd() *cobra.Command {
 		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, _ []string) error {
 			profile := config.Resolve(gf.profile)
-			sessionJSON, err := store().Get(profile)
+			sessionJSON, err := keyringStore().Get(profile)
 			if err != nil || sessionJSON == "" {
 				return fmt.Errorf("no session for profile %q — run `garminctl auth import` or `garminctl auth login`", profile)
 			}
@@ -140,7 +140,7 @@ func newAuthLogoutCmd() *cobra.Command {
 		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, _ []string) error {
 			profile := config.Resolve(gf.profile)
-			if err := store().Delete(profile); err != nil {
+			if err := keyringStore().Delete(profile); err != nil {
 				return err
 			}
 			fmt.Fprintf(cmd.ErrOrStderr(), "removed session for profile %q\n", profile)
