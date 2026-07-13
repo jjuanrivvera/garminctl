@@ -1,4 +1,23 @@
+<div align="center">
+
 # garminctl
+
+[![CI](https://github.com/jjuanrivvera/garminctl/actions/workflows/ci.yml/badge.svg)](https://github.com/jjuanrivvera/garminctl/actions/workflows/ci.yml)
+[![Release](https://img.shields.io/github/v/release/jjuanrivvera/garminctl)](https://github.com/jjuanrivvera/garminctl/releases/latest)
+[![Coverage](https://img.shields.io/badge/coverage-%E2%89%A580%25-brightgreen)](https://github.com/jjuanrivvera/garminctl/actions/workflows/ci.yml)
+[![Go Reference](https://pkg.go.dev/badge/github.com/jjuanrivvera/garminctl.svg)](https://pkg.go.dev/github.com/jjuanrivvera/garminctl)
+[![Go version](https://img.shields.io/github/go-mod/go-version/jjuanrivvera/garminctl)](go.mod)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+[![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/jjuanrivvera/garminctl)
+[![Built with cliwright](https://img.shields.io/badge/built_with-cliwright-1f6feb)](https://cliwright.jjuanrivvera.com)
+
+**A CLI for Garmin Connect — read your health, activity, and training data from the terminal; offline-capable and agent-ready.**
+
+[Documentation](https://jjuanrivvera.github.io/garminctl/) · [Commands](https://jjuanrivvera.github.io/garminctl/commands/)
+
+</div>
+
+---
 
 A [Garmin Connect](https://connect.garmin.com) CLI: read your health and activity data — sleep,
 body composition, stress, heart rate, activities, training metrics, and the full Garmin Connect
