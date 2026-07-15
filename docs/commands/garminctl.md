@@ -33,6 +33,7 @@ and table/json/yaml/csv output.
 ### SEE ALSO
 
 * [garminctl activities](garminctl_activities.md)	 - activities commands
+* [garminctl activities-daily](garminctl_activities-daily.md)	 - Activities recorded on a day
 * [garminctl agent](garminctl_agent.md)	 - AI-agent integration helpers
 * [garminctl api](garminctl_api.md)	 - Make a raw authenticated request to the Garmin Connect API
 * [garminctl auth](garminctl_auth.md)	 - Manage Garmin Connect authentication
@@ -50,7 +51,7 @@ and table/json/yaml/csv output.
 * [garminctl fitnessstats](garminctl_fitnessstats.md)	 - fitnessstats commands
 * [garminctl heart-rate](garminctl_heart-rate.md)	 - Daily and resting heart rate for a day
 * [garminctl history](garminctl_history.md)	 - Query the local store for a metric across a date range (offline)
-* [garminctl hrv](garminctl_hrv.md)	 - hrv commands
+* [garminctl hrv](garminctl_hrv.md)	 - Overnight HRV summary and readings for a day
 * [garminctl init](garminctl_init.md)	 - Guided first-time setup (import existing tokens)
 * [garminctl intensity-minutes](garminctl_intensity-minutes.md)	 - Intensity minutes for a day
 * [garminctl mcp](garminctl_mcp.md)	 - MCP server management
@@ -58,9 +59,11 @@ and table/json/yaml/csv output.
 * [garminctl profile](garminctl_profile.md)	 - profile commands
 * [garminctl respiration](garminctl_respiration.md)	 - All-day respiration for a day
 * [garminctl sleep](garminctl_sleep.md)	 - Sleep stages, duration, and score for a day
+* [garminctl spo2](garminctl_spo2.md)	 - Pulse ox (SpO2) summary for a day
 * [garminctl steps](garminctl_steps.md)	 - Daily step count, goal, and distance for a day
 * [garminctl stress](garminctl_stress.md)	 - All-day stress for a day
 * [garminctl sync](garminctl_sync.md)	 - Backfill daily metrics into the local store for offline use
+* [garminctl training-readiness](garminctl_training-readiness.md)	 - Training readiness score and contributing factors for a day
 * [garminctl version](garminctl_version.md)	 - Print version, commit, and build date
 * [garminctl weight](garminctl_weight.md)	 - weight commands
 * [garminctl wellness](garminctl_wellness.md)	 - wellness commands

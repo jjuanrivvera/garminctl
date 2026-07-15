@@ -1,8 +1,8 @@
 {
-  "_comment": "Spec-derived manifest (cliwright §0/§11). Enumerated from the llehouerou/go-garmin endpoint registry (definitions.RegisterAll -> reg.All()). The curated resources[] are the friendly top-level commands; the full surface is exposed under `garminctl connect <service> <endpoint>` and enumerated in methods[]. Garmin Connect is an RPC-style (non-OpenAPI) API, so flat method names are the correct representation.",
+  "_comment": "Spec-derived manifest (cliwright \u00a70/\u00a711). Enumerated from the llehouerou/go-garmin endpoint registry (definitions.RegisterAll -> reg.All()). The curated resources[] are the friendly top-level commands; the full surface is exposed under `garminctl connect <service> <endpoint>` and enumerated in methods[]. Garmin Connect is an RPC-style (non-OpenAPI) API, so flat method names are the correct representation.",
   "binary": "garminctl",
   "base_url": "https://connect.garmin.com",
-  "auth": "oauth1+oauth2 (garth-style, via llehouerou/go-garmin) — OAuth1 ~1yr drives OAuth2 auto-refresh",
+  "auth": "oauth1+oauth2 (garth-style, via llehouerou/go-garmin) \u2014 OAuth1 ~1yr drives OAuth2 auto-refresh",
   "pagination": "none (date-scoped daily endpoints)",
   "api_method_total": 68,
   "api_method_source": "github.com/llehouerou/go-garmin endpoint registry (definitions.RegisterAll -> reg.All())",
@@ -58,6 +58,26 @@
         "stepGoal",
         "totalDistance"
       ]
+    },
+    {
+      "name": "hrv",
+      "verbs": [],
+      "read_only": true
+    },
+    {
+      "name": "spo2",
+      "verbs": [],
+      "read_only": true
+    },
+    {
+      "name": "training-readiness",
+      "verbs": [],
+      "read_only": true
+    },
+    {
+      "name": "activities-daily",
+      "verbs": [],
+      "read_only": true
     }
   ],
   "methods": [

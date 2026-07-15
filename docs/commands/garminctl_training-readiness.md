@@ -1,22 +1,22 @@
-## garminctl hrv
+## garminctl training-readiness
 
-Overnight HRV summary and readings for a day
+Training readiness score and contributing factors for a day
 
 ```
-garminctl hrv [flags]
+garminctl training-readiness [flags]
 ```
 
 ### Examples
 
 ```
-  garminctl --profile me hrv --date 2026-07-10 -o json
+  garminctl --profile me training-readiness --date 2026-07-10 -o json
 ```
 
 ### Options
 
 ```
       --date string   date YYYY-MM-DD (default: today)
-  -h, --help          help for hrv
+  -h, --help          help for training-readiness
 ```
 
 ### Options inherited from parent commands
