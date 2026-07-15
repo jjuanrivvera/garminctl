@@ -11,6 +11,9 @@ import (
 	"github.com/jjuanrivvera/garminctl/internal/version"
 )
 
+// newUpdater builds the self-updater; a package var so tests can point it at a stub server.
+var newUpdater = update.NewUpdater
+
 func init() {
 	registerCommand(func(root *cobra.Command) { root.AddCommand(newUpdateCmd()) })
 }
@@ -27,7 +30,7 @@ against the release checksums, and replace the running binary in place.`,
 		RunE: func(cmd *cobra.Command, _ []string) error {
 			ctx, cancel := context.WithTimeout(cmd.Context(), 60*time.Second)
 			defer cancel()
-			res := update.NewUpdater(version.Get().Version).CheckAndUpdate(ctx)
+			res := newUpdater(version.Get().Version).CheckAndUpdate(ctx)
 			if res.Error != nil {
 				return res.Error
 			}
@@ -49,7 +52,7 @@ against the release checksums, and replace the running binary in place.`,
 			ctx, cancel := context.WithTimeout(cmd.Context(), 30*time.Second)
 			defer cancel()
 			cur := version.Get().Version
-			rel, err := update.NewUpdater(cur).GetLatestRelease(ctx)
+			rel, err := newUpdater(cur).GetLatestRelease(ctx)
 			if err != nil {
 				return err
 			}

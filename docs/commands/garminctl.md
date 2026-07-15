@@ -64,6 +64,7 @@ and table/json/yaml/csv output.
 * [garminctl stress](garminctl_stress.md)	 - All-day stress for a day
 * [garminctl sync](garminctl_sync.md)	 - Backfill daily metrics into the local store for offline use
 * [garminctl training-readiness](garminctl_training-readiness.md)	 - Training readiness score and contributing factors for a day
+* [garminctl update](garminctl_update.md)	 - Update garminctl to the latest release
 * [garminctl version](garminctl_version.md)	 - Print version, commit, and build date
 * [garminctl weight](garminctl_weight.md)	 - weight commands
 * [garminctl wellness](garminctl_wellness.md)	 - wellness commands
