@@ -13,8 +13,9 @@ import (
 )
 
 // curatedShadow lists registry command names already provided by a friendlier curated resource,
-// so promoting the registry to the top level doesn't collide with them. Only `sleep` overlaps.
-var curatedShadow = map[string]bool{"sleep": true}
+// so promoting the registry to the top level doesn't collide with them. `sleep` and `hrv`
+// overlap; the shadowed extras (hrv get-range) stay reachable through the `api` hatch.
+var curatedShadow = map[string]bool{"sleep": true, "hrv": true}
 
 func init() {
 	registerCommand(func(root *cobra.Command) {

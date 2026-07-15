@@ -49,6 +49,21 @@ var curatedResources = []curatedResource{
 		func(ctx context.Context, c *gm.Client, d time.Time) (any, error) {
 			return c.Wellness.GetDailyIntensityMinutes(ctx, d)
 		}},
+	// hrv shadows the registry's `hrv` group (like sleep does); the range read stays reachable
+	// through the `api` hatch.
+	{"hrv", "Overnight HRV summary and readings for a day",
+		func(ctx context.Context, c *gm.Client, d time.Time) (any, error) { return c.HRV.GetDaily(ctx, d) }},
+	{"spo2", "Pulse ox (SpO2) summary for a day",
+		func(ctx context.Context, c *gm.Client, d time.Time) (any, error) {
+			return c.Wellness.GetDailySpO2(ctx, d)
+		}},
+	{"training-readiness", "Training readiness score and contributing factors for a day",
+		func(ctx context.Context, c *gm.Client, d time.Time) (any, error) {
+			return c.Metrics.GetTrainingReadiness(ctx, d)
+		}},
+	// activities have no per-date go-garmin method (List paginates by index only), so the fetch
+	// goes through the raw client — see fetchActivitiesDaily in activities_daily.go.
+	{"activities-daily", "Activities recorded on a day", fetchActivitiesDaily},
 	// steps has no go-garmin service method (StepsService is an unimplemented stub) nor a registry
 	// endpoint, so its fetch goes through the raw client — see fetchSteps in steps.go.
 	{"steps", "Daily step count, goal, and distance for a day", fetchSteps},

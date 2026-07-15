@@ -4,6 +4,19 @@ All notable changes to garminctl are documented here. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project adheres to
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Added
+
+- **Four new curated metrics: `hrv`, `spo2`, `training-readiness`, and `activities-daily`.**
+  They complete the daily-health surface the offline store can hold, so a `garminctl sync` cron
+  plus `history`/`--offline` reads can replace an external metrics database. Each slots into the
+  curated machinery like the others: `--date`, `-o table/json/yaml/csv`, `--offline`, `history`,
+  and `sync`. `hrv` shadows the registry's `hrv` group the way `sleep` always has (the range
+  read stays reachable via `api /hrv-service/hrv/...`). `activities-daily` fetches through the
+  raw client because go-garmin's `ActivityService.List` paginates by index with no date filter;
+  the response decodes into go-garmin's `Activity` type so fields match `activities list`.
+
 ## [0.3.0] - 2026-07-12
 
 ### Added

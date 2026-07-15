@@ -1,22 +1,22 @@
-## garminctl hrv
+## garminctl activities-daily
 
-Overnight HRV summary and readings for a day
+Activities recorded on a day
 
 ```
-garminctl hrv [flags]
+garminctl activities-daily [flags]
 ```
 
 ### Examples
 
 ```
-  garminctl --profile me hrv --date 2026-07-10 -o json
+  garminctl --profile me activities-daily --date 2026-07-10 -o json
 ```
 
 ### Options
 
 ```
       --date string   date YYYY-MM-DD (default: today)
-  -h, --help          help for hrv
+  -h, --help          help for activities-daily
 ```
 
 ### Options inherited from parent commands

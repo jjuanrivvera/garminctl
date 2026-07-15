@@ -1,22 +1,22 @@
-## garminctl hrv
+## garminctl spo2
 
-Overnight HRV summary and readings for a day
+Pulse ox (SpO2) summary for a day
 
 ```
-garminctl hrv [flags]
+garminctl spo2 [flags]
 ```
 
 ### Examples
 
 ```
-  garminctl --profile me hrv --date 2026-07-10 -o json
+  garminctl --profile me spo2 --date 2026-07-10 -o json
 ```
 
 ### Options
 
 ```
       --date string   date YYYY-MM-DD (default: today)
-  -h, --help          help for hrv
+  -h, --help          help for spo2
 ```
 
 ### Options inherited from parent commands
