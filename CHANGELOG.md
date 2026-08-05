@@ -4,7 +4,7 @@ All notable changes to garminctl are documented here. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project adheres to
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [0.6.0] - 2026-08-05
 
 ### Security
 
@@ -23,6 +23,12 @@ All notable changes to garminctl are documented here. The format follows
   All 72 exported `annotations: null`, and hosts enforcing a read-only session allow a tool
   only when `readOnlyHint` is strictly true, so the whole server was dropped. 69 tools are
   read-only; `courses import` and `update` are writes; `courses delete` is destructive.
+
+## [0.5.0] - 2026-07-15
+
+### Added
+
+- `garminctl update` — self-update to the latest release.
 
 ## [0.4.0] - 2026-07-15
 
