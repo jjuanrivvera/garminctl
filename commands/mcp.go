@@ -7,9 +7,12 @@ import (
 
 // excludedFromMCP are command-name substrings kept out of the MCP tool surface: setup/meta
 // commands an agent should not drive, the raw `api` escape hatch (which would bypass the typed
-// surface), and `workouts` (the one group with writes — create/update/delete/schedule). The
-// `mcp` and `agent` subtrees are excluded too so an agent can neither re-enter the server nor
-// disable its own guardrails.
+// surface), and `workouts` (create/update/delete/schedule). The `mcp` and `agent` subtrees are
+// excluded too so an agent can neither re-enter the server nor disable its own guardrails.
+//
+// `courses` is NOT excluded — its reads (list/get/download-fit/download-gpx) are the point — so
+// its two writes are handled by annotation instead: "courses import" falls to the write default
+// and "courses delete" is destructive, and the agent guard blocks it on the Bash surface too.
 var excludedFromMCP = []string{
 	"agent", "auth", "config", "alias", "init", "doctor", "completion", "version", "api", "workouts",
 	// `sync` bulk-fetches a date range — not something an agent should trigger. (`history`, a local

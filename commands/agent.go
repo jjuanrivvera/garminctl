@@ -9,12 +9,17 @@ import (
 
 // blockedBashPaths are garminctl subcommand paths an agent must never run on the Bash surface.
 // garminctl is read-focused, but promoting go-garmin's full registry brings in workout
-// management (create/update/delete/schedule/unschedule) — the only typed writes — plus the two
-// indirect vectors (deleting the stored session, minting an alias that expands to a blocked
-// command). The raw `api` hatch is gated separately (by HTTP method) inside the hook.
+// management (create/update/delete/schedule/unschedule) and course management (import/delete)
+// — the typed writes — plus the two indirect vectors (deleting the stored session, minting an
+// alias that expands to a blocked command). The raw `api` hatch is gated separately (by HTTP
+// method) inside the hook.
+//
+// "courses delete" permanently removes a course from the Garmin Connect account and, unlike
+// workouts, is NOT excluded from the MCP surface — so it has to be blocked here.
 var blockedBashPaths = []string{
 	"alias set",
 	"auth logout",
+	"courses delete",
 	"workouts create",
 	"workouts update",
 	"workouts delete",
