@@ -48,5 +48,8 @@ and table/json/yaml/csv output.`,
 	for _, fn := range commandRegistrars {
 		fn(root)
 	}
+	// Must run after every registrar: ophis reads cmd.Annotations when the mcp subcommand
+	// runs, and a host in read-only mode drops a server with no read-only tool.
+	applyMCPAnnotations(root)
 	return root
 }

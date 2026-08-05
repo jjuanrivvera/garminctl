@@ -4,6 +4,22 @@ All notable changes to garminctl are documented here. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project adheres to
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Security
+
+- `courses delete` permanently removes a course from the Garmin Connect account, but was
+  missing from the agent guard's blocked paths and — unlike `workouts` — is exposed on the
+  MCP surface. An agent could reach it on either surface. It is now blocked, and a test
+  asserts every destructive command appears in the blocked list.
+
+### Added
+
+- MCP tools now carry annotations (`readOnlyHint`, `destructiveHint`, `openWorldHint`).
+  All 72 exported `annotations: null`, and hosts enforcing a read-only session allow a tool
+  only when `readOnlyHint` is strictly true, so the whole server was dropped. 69 tools are
+  read-only; `courses import` and `update` are writes; `courses delete` is destructive.
+
 ## [0.4.0] - 2026-07-15
 
 ### Added
