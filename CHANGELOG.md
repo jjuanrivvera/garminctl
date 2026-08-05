@@ -9,9 +9,13 @@ All notable changes to garminctl are documented here. The format follows
 ### Security
 
 - `courses delete` permanently removes a course from the Garmin Connect account, but was
-  missing from the agent guard's blocked paths and — unlike `workouts` — is exposed on the
-  MCP surface. An agent could reach it on either surface. It is now blocked, and a test
-  asserts every destructive command appears in the blocked list.
+  missing from the agent guard's blocked paths, so nothing stopped an agent shelling out to
+  it. The Bash guard now blocks it, and a test asserts every destructive command appears in
+  the blocked list.
+
+  It stays exposed on the MCP surface — unlike `workouts`, which is excluded — because the
+  `courses` reads are worth keeping. There it is marked `destructiveHint`, so hosts deny it
+  in a read-only session or prompt for approval; the server itself does not refuse the call.
 
 ### Added
 
