@@ -1,8 +1,7 @@
 module github.com/jjuanrivvera/garminctl
 
-go 1.25.5
+go 1.26.8
 
-toolchain go1.25.13
 
 require (
 	github.com/llehouerou/go-garmin v0.0.0-20260217041215-cbf5895e08bf
