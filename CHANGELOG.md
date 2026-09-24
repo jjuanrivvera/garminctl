@@ -4,6 +4,23 @@ All notable changes to garminctl are documented here. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project adheres to
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Fixed
+- **A day with no data no longer looks like a measurement of zero (issue #16).** Garmin answers
+  an unsynced day with `200` and a null body; Go's zero values turn those nulls into `0`, so
+  `garminctl heart-rate` reported `restingHeartRate: 0` — physiologically impossible, and
+  indistinguishable from a real reading to anything parsing the JSON. An automated daily summary
+  duly reported "resting heart rate: 0".
+
+  The daily reads now detect a payload that holds nothing but the fields the request echoed
+  back, say so on stderr, and exit **4** (`ExitNoData`) instead of 0, so a script can tell
+  "nothing to report" from "it worked". **The output is unchanged** — altering the shape of a
+  payload would break every consumer to help the few that check — and the detection errs toward
+  saying there *is* data, so a false positive costs an exit status, never output. An empty day
+  is also no longer written to the offline store, where it would have sat in the place the real
+  data goes.
+
 ## [0.6.0] - 2026-08-05
 
 ### Security
