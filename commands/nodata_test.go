@@ -104,6 +104,14 @@ func TestDailyRead_EmptyDaySignalsNoData(t *testing.T) {
 	if !gf.noData {
 		t.Error("the empty day must be recorded for the exit status")
 	}
+
+	// The exit status is the whole point of the fix, so assert the number a script would see
+	// rather than the flag behind it.
+	if code := Main(t.Context(), []string{
+		"--profile", "me", "heart-rate", "--date", "2026-09-17", "-o", "json",
+	}); code != ExitNoData {
+		t.Errorf("Main returned %d for an empty day, want ExitNoData (%d)", code, ExitNoData)
+	}
 }
 
 // And a day with real numbers stays silent and exits 0.
@@ -130,5 +138,10 @@ func TestDailyRead_RealDayIsSilent(t *testing.T) {
 	}
 	if gf.noData {
 		t.Error("a day with measurements must not set the no-data status")
+	}
+	if code := Main(t.Context(), []string{
+		"--profile", "me", "steps", "--date", "2026-07-10", "-o", "json",
+	}); code != 0 {
+		t.Errorf("Main returned %d for a day with data, want 0", code)
 	}
 }
