@@ -27,5 +27,9 @@ func Main(ctx context.Context, args []string) int {
 		fmt.Fprintln(os.Stderr, "Error:", output.SanitizeTerminal(err.Error()))
 		return 1
 	}
+	if gf.noData {
+		// The output was printed; this only lets a script tell an empty day from a real one.
+		return ExitNoData
+	}
 	return 0
 }

@@ -59,7 +59,7 @@ curated metrics.`,
 				}
 				defer func() { _ = st.Close() }()
 
-				var days, stored, failed int
+				var days, stored, failed, skipped int
 				for d := from; !d.After(to); d = d.AddDate(0, 0, 1) {
 					days++
 					key := d.Format("2006-01-02")
@@ -68,6 +68,13 @@ curated metrics.`,
 						if err != nil {
 							failed++
 							fmt.Fprintf(cmd.ErrOrStderr(), "  ! %s %s: %v\n", key, r.name, err)
+							continue
+						}
+						if !hasData(result) {
+							// A day the watch never synced is not worth storing: an empty row
+							// would sit where the real data goes once it does sync, and would
+							// answer a later offline read as though it were the day's truth.
+							skipped++
 							continue
 						}
 						b, mErr := json.Marshal(result)
@@ -83,8 +90,8 @@ curated metrics.`,
 					}
 				}
 				fmt.Fprintf(cmd.OutOrStdout(),
-					"synced %d day(s) × %d metric(s) → %d stored, %d failed (profile %q)\n",
-					days, len(metrics), stored, failed, profile)
+					"synced %d day(s) × %d metric(s) → %d stored, %d empty, %d failed (profile %q)\n",
+					days, len(metrics), stored, skipped, failed, profile)
 				return nil
 			},
 		}

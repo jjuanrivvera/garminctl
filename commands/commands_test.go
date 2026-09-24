@@ -31,6 +31,13 @@ func mockOK() *http.Client {
 		if strings.Contains(r.URL.Path, "trainingreadiness") { // training readiness returns a JSON array
 			body = "[]"
 		}
+		// A slept night, not an empty day: an all-null body is what Garmin returns for a date
+		// the watch never synced, and garminctl now treats that as "no data" (issue #16). Tests
+		// that mean "the store round-trips a day" need a day with something in it.
+		if strings.Contains(r.URL.Path, "dailySleepData") || strings.Contains(r.URL.Path, "sleep") {
+			body = `{"dailySleepDTO":{"id":1001,"calendarDate":"2026-07-09","sleepTimeSeconds":27180,` +
+				`"deepSleepSeconds":5400,"lightSleepSeconds":18000,"remSleepSeconds":3780,"sleepScore":78}}`
+		}
 		if strings.Contains(r.URL.Path, "activitylist-service") { // activity search returns an array
 			body = `[{"activityId":42,"activityName":"Morning Run","activityType":{"typeKey":"running"},"startTimeLocal":"2026-07-10 06:00:00","duration":1800.0,"calories":250.0}]`
 		}

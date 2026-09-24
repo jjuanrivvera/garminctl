@@ -12,6 +12,11 @@ type globalFlags struct {
 	noColor bool
 	dryRun  bool
 	offline bool
+	// noData records that a read succeeded but the day held no measurement. It rides here
+	// rather than as an error because it is not one — the request worked — and an error would
+	// print "Error:" for a perfectly good call. Main turns it into ExitNoData. NewRootCmd
+	// resets it with the rest of the flags, so one invocation never sees another's answer.
+	noData bool
 }
 
 var gf globalFlags
@@ -39,6 +44,7 @@ and table/json/yaml/csv output.`,
 		SilenceUsage:  true,
 		SilenceErrors: true,
 	}
+	gf.noData = false
 	p := root.PersistentFlags()
 	p.StringVar(&gf.profile, "profile", "", "profile (Garmin account) to use; env GARMINCTL_PROFILE")
 	p.StringVarP(&gf.output, "output", "o", "table", "output format: table|json|yaml|csv")

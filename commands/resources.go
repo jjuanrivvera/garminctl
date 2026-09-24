@@ -116,6 +116,7 @@ func newDateResource(r curatedResource) *cobra.Command {
 				if !ok {
 					return fmt.Errorf("no offline data for %s on %s — run `garminctl sync` while online", r.name, dateKey)
 				}
+				noteIfEmpty(cmd, r.name, dateKey, v)
 				return output.Render(cmd.OutOrStdout(), gf.output, v)
 			}
 
@@ -127,6 +128,11 @@ func newDateResource(r curatedResource) *cobra.Command {
 			result, err := r.fetch(cmd.Context(), c, date)
 			if err != nil {
 				return err
+			}
+			if noteIfEmpty(cmd, r.name, dateKey, result) {
+				// Don't grow the offline store with a day that holds nothing: a later sync of
+				// the same date would find a cached emptiness sitting where the data goes.
+				return output.Render(cmd.OutOrStdout(), gf.output, result)
 			}
 			cacheSample(profile, r.name, dateKey, result) // grow the offline store as you read
 			return output.Render(cmd.OutOrStdout(), gf.output, result)
