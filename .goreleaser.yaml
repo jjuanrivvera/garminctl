@@ -46,8 +46,8 @@ homebrew_casks:
     homepage: https://github.com/jjuanrivvera/garminctl
     hooks:
       post:
-        install: |
-          system_command "/usr/bin/xattr", args: ["-dr", "com.apple.quarantine", "#{staged_path}/garminctl"]
+        install_steps: |
+          run "/usr/bin/xattr", args: ["-dr", "com.apple.quarantine", "{{ .StagedPath }}/garminctl"]
 
 scoops:
   - repository: { owner: jjuanrivvera, name: scoop-garminctl, token: "{{ .Env.HOMEBREW_TAP_TOKEN }}" }   # bucket repo must already exist; cross-repo token
